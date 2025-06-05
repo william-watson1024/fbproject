@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MybetrecordMapper">
+    
+    <resultMap type="Mybetrecord" id="MybetrecordResult">
+        <result property="id"    column="id"    />
+        <result property="myFbuserId"    column="my_fbuser_id"    />
+        <result property="myFbuserAccount"    column="my_fbuser_account"    />
+        <result property="betNum"    column="bet_num"    />
+        <result property="betName"    column="bet_name"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="betTime"    column="bet_time"    />
+    </resultMap>
+
+    <sql id="selectMybetrecordVo">
+        select id, my_fbuser_id, my_fbuser_account, bet_num, bet_name, is_active, bet_time from mybetrecord
+    </sql>
+
+    <select id="selectMybetrecordList" parameterType="Mybetrecord" resultMap="MybetrecordResult">
+        <include refid="selectMybetrecordVo"/>
+        <where>  
+            <if test="myFbuserId != null "> and my_fbuser_id = #{myFbuserId}</if>
+            <if test="myFbuserAccount != null  and myFbuserAccount != ''"> and my_fbuser_account = #{myFbuserAccount}</if>
+            <if test="betNum != null "> and bet_num = #{betNum}</if>
+            <if test="betName != null  and betName != ''"> and bet_name like concat('%', #{betName}, '%')</if>
+            <if test="isActive != null "> and is_active = #{isActive}</if>
+            <if test="betTime != null "> and bet_time = #{betTime}</if>
+        </where>
+    </select>
+
+    <select id="selectActiveRecords" resultMap="MybetrecordResult">
+        SELECT id, my_fbuser_id, my_fbuser_account, bet_num, bet_name, is_active, bet_time
+        FROM mybetrecord
+        WHERE is_active = 1
+    </select>
+
+    <select id="selectMybetrecordById" parameterType="Long" resultMap="MybetrecordResult">
+        <include refid="selectMybetrecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMybetrecord" parameterType="Mybetrecord" useGeneratedKeys="true" keyProperty="id">
+        insert into mybetrecord
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="myFbuserId != null">my_fbuser_id,</if>
+            <if test="myFbuserAccount != null">my_fbuser_account,</if>
+            <if test="betNum != null">bet_num,</if>
+            <if test="betName != null">bet_name,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="betTime != null">bet_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="myFbuserId != null">#{myFbuserId},</if>
+            <if test="myFbuserAccount != null">#{myFbuserAccount},</if>
+            <if test="betNum != null">#{betNum},</if>
+            <if test="betName != null">#{betName},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="betTime != null">#{betTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMybetrecord" parameterType="Mybetrecord">
+        update mybetrecord
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="myFbuserId != null">my_fbuser_id = #{myFbuserId},</if>
+            <if test="myFbuserAccount != null">my_fbuser_account = #{myFbuserAccount},</if>
+            <if test="betNum != null">bet_num = #{betNum},</if>
+            <if test="betName != null">bet_name = #{betName},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="betTime != null">bet_time = #{betTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMybetrecordById" parameterType="Long">
+        delete from mybetrecord where id = #{id}
+    </delete>
+
+    <delete id="deleteMybetrecordByIds" parameterType="String">
+        delete from mybetrecord where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
