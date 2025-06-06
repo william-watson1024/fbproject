@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,10 @@ public class FbGameInfoServiceImpl implements IFbGameInfoService
     public int deleteFbGameInfoById(Long id)
     {
         return fbGameInfoMapper.deleteFbGameInfoById(id);
+    }
+
+    @Override
+    public List<FbGameInfo> selectFbGameInfoListAfterTime(LocalDateTime time) {
+        return fbGameInfoMapper.selectFbGameInfoListAfterTime(time);
     }
 }

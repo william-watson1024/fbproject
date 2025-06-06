@@ -58,4 +58,6 @@ public interface FbGameUserMapper
      * @return 结果
      */
     public int deleteFbGameUserByIds(Long[] ids);
+
+    FbGameUser selectUserByAccount(String account);
 }

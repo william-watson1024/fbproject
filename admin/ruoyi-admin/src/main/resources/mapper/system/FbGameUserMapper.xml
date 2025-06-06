@@ -30,6 +30,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFbGameUserVo"/>
         where id = #{id}
     </select>
+    <select id="selectUserByAccount" resultType="com.ruoyi.system.domain.FbGameUser">
+        <include refid="selectFbGameUserVo"/>
+        where account = #{account}
+    </select>
 
     <insert id="insertFbGameUser" parameterType="FbGameUser" useGeneratedKeys="true" keyProperty="id">
         insert into fb_game_user
