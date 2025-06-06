@@ -41,6 +41,19 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="游戏状态" prop="gameStatus">
+        <el-select
+          v-model="queryParams.gameStatus"
+          placeholder="请选择游戏状态"
+          clearable
+          @change="handleQuery"
+        >
+          <el-option label="投注中" value="投注中" />
+          <el-option label="封盘" value="封盘" />
+          <el-option label="已开奖" value="已开奖" />
+          <el-option label="已结算" value="已结算" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="游戏局流水号" prop="gameSerialNumber">
         <el-input
           v-model="queryParams.gameSerialNumber"
@@ -197,7 +210,16 @@
           <el-input v-model="form.result" placeholder="请输入开奖结果" />
         </el-form-item>
         <el-form-item label="游戏状态" prop="gameStatus">
-          <el-input v-model="form.gameStatus" type="textarea" placeholder="请输入内容" />
+          <el-select
+            v-model="form.gameStatus"
+            placeholder="请选择游戏状态"
+            clearable
+          >
+            <el-option label="投注中" value="投注中" />
+            <el-option label="封盘" value="封盘" />
+            <el-option label="已开奖" value="已开奖" />
+            <el-option label="已结算" value="已结算" />
+          </el-select>
         </el-form-item>
         <el-form-item label="游戏局流水号" prop="gameSerialNumber">
           <el-input v-model="form.gameSerialNumber" placeholder="请输入游戏局流水号" />

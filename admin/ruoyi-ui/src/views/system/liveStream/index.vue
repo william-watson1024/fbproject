@@ -26,12 +26,15 @@
         />
       </el-form-item>
       <el-form-item label="直播状态" prop="isActive">
-        <el-input
+        <el-select
           v-model="queryParams.isActive"
-          placeholder="请输入直播状态"
+          placeholder="请选择直播状态"
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+          @change="handleQuery"
+        >
+          <el-option label="直播中" :value="1"></el-option>
+          <el-option label="未直播" :value="0"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="游戏类型" prop="gameType">
         <el-input
@@ -115,7 +118,16 @@
       <el-table-column label="直播名称" align="center" prop="name" />
       <el-table-column label="直播描述" align="center" prop="description" />
       <el-table-column label="直播链接" align="center" prop="url" />
-      <el-table-column label="直播状态" align="center" prop="isActive" />
+      <el-table-column label="直播状态" align="center" width="100">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isActive"
+            :active-value="1"
+            :inactive-value="0"
+            @change="handleStatusChange($event, scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="游戏类型" align="center" prop="gameType" />
       <el-table-column label="游戏主播名称" align="center" prop="gameHost" />
       <el-table-column label="游戏开始时间" align="center" prop="gameStartTime" width="180">
@@ -164,7 +176,10 @@
           <el-input v-model="form.url" placeholder="请输入直播链接" />
         </el-form-item>
         <el-form-item label="直播状态" prop="isActive">
-          <el-input v-model="form.isActive" placeholder="请输入直播状态" />
+          <el-select v-model="form.isActive" placeholder="请选择直播状态" clearable>
+            <el-option label="直播中" :value="1"></el-option>
+            <el-option label="未直播" :value="0"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="游戏类型" prop="gameType">
           <el-input v-model="form.gameType" placeholder="请输入游戏类型" />
@@ -190,7 +205,14 @@
 </template>
 
 <script>
-import { listLiveStream, getLiveStream, delLiveStream, addLiveStream, updateLiveStream } from "@/api/system/liveStream"
+import {
+  listLiveStream,
+  getLiveStream,
+  delLiveStream,
+  addLiveStream,
+  updateLiveStream,
+  changeLiveStreamStatus
+} from "@/api/system/liveStream"
 
 export default {
   name: "LiveStream",
@@ -353,6 +375,26 @@ export default {
       this.download('system/liveStream/export', {
         ...this.queryParams
       }, `liveStream_${new Date().getTime()}.xlsx`)
+    },
+    handleStatusChange(newVal, row) {
+      const originalStatus = row.isActive  // 当前真实值
+      const newStatus = newVal            // 用户点击后的新值
+      const text = newStatus === 1 ? '开启' : '关闭'
+
+      // 先将 row.status 改为原值，避免 UI 预切换
+      row.isActive = originalStatus
+
+      this.$modal.confirm(`确认要${text}“${row.id}”直播间吗？`)
+        .then(() => {
+          return changeLiveStreamStatus(row.id, newStatus)
+        })
+        .then(() => {
+          row.isActive = newStatus    // 用户确认后才更新状态
+          this.$modal.msgSuccess(`${text}成功`)
+        })
+        .catch(() => {
+          // 用户取消，row.isActive 保持原值，switch UI恢复
+        })
     }
   }
 }

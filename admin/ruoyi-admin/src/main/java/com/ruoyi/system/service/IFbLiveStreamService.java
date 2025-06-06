@@ -58,4 +58,6 @@ public interface IFbLiveStreamService
      * @return 结果
      */
     public int deleteFbLiveStreamById(Long id);
+
+    int changeStatus(FbLiveStream fbLiveStream);
 }

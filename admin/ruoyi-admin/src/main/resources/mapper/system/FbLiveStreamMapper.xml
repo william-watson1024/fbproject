@@ -83,4 +83,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <update id="updateLiveStreamStatus">
+        UPDATE fb_live_stream
+        SET is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
 </mapper>

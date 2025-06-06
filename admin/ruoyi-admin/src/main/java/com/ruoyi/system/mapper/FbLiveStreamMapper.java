@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.FbLiveStream;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 直播网站管理Mapper接口
@@ -58,4 +59,7 @@ public interface FbLiveStreamMapper
      * @return 结果
      */
     public int deleteFbLiveStreamByIds(Long[] ids);
+
+    int updateLiveStreamStatus(@Param("id") Long id, @Param("isActive") Integer isActive);
+
 }
