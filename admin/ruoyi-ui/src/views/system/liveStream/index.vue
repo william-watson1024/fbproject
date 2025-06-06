@@ -390,6 +390,7 @@ export default {
         })
         .then(() => {
           row.isActive = newStatus    // 用户确认后才更新状态
+          this.getList()
           this.$modal.msgSuccess(`${text}成功`)
         })
         .catch(() => {
