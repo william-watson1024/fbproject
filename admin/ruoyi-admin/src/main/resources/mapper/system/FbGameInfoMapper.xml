@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FbGameInfoMapper">
+    
+    <resultMap type="FbGameInfo" id="FbGameInfoResult">
+        <result property="id"    column="id"    />
+        <result property="gameName"    column="game_name"    />
+        <result property="gameHost"    column="game_host"    />
+        <result property="liveStreamId"    column="live_stream_id"    />
+        <result property="gameRound"    column="game_round"    />
+        <result property="result"    column="result"    />
+        <result property="gameStatus"    column="game_status"    />
+        <result property="gameSerialNumber"    column="game_serial_number"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="closeTime"    column="close_time"    />
+        <result property="endTime"    column="end_time"    />
+    </resultMap>
+
+    <sql id="selectFbGameInfoVo">
+        select id, game_name, game_host, live_stream_id, game_round, result, game_status, game_serial_number, start_time, close_time, end_time from fb_game_info
+    </sql>
+
+    <select id="selectFbGameInfoList" parameterType="FbGameInfo" resultMap="FbGameInfoResult">
+        <include refid="selectFbGameInfoVo"/>
+        <where>  
+            <if test="gameName != null  and gameName != ''"> and game_name like concat('%', #{gameName}, '%')</if>
+            <if test="gameHost != null  and gameHost != ''"> and game_host like concat('%', #{gameHost}, '%')</if>
+            <if test="liveStreamId != null "> and live_stream_id = #{liveStreamId}</if>
+            <if test="gameRound != null "> and game_round = #{gameRound}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="gameStatus != null  and gameStatus != ''"> and game_status = #{gameStatus}</if>
+            <if test="gameSerialNumber != null  and gameSerialNumber != ''"> and game_serial_number = #{gameSerialNumber}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="closeTime != null "> and close_time = #{closeTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFbGameInfoById" parameterType="Long" resultMap="FbGameInfoResult">
+        <include refid="selectFbGameInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFbGameInfo" parameterType="FbGameInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into fb_game_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gameName != null and gameName != ''">game_name,</if>
+            <if test="gameHost != null and gameHost != ''">game_host,</if>
+            <if test="liveStreamId != null">live_stream_id,</if>
+            <if test="gameRound != null">game_round,</if>
+            <if test="result != null">result,</if>
+            <if test="gameStatus != null and gameStatus != ''">game_status,</if>
+            <if test="gameSerialNumber != null and gameSerialNumber != ''">game_serial_number,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="closeTime != null">close_time,</if>
+            <if test="endTime != null">end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gameName != null and gameName != ''">#{gameName},</if>
+            <if test="gameHost != null and gameHost != ''">#{gameHost},</if>
+            <if test="liveStreamId != null">#{liveStreamId},</if>
+            <if test="gameRound != null">#{gameRound},</if>
+            <if test="result != null">#{result},</if>
+            <if test="gameStatus != null and gameStatus != ''">#{gameStatus},</if>
+            <if test="gameSerialNumber != null and gameSerialNumber != ''">#{gameSerialNumber},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="closeTime != null">#{closeTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFbGameInfo" parameterType="FbGameInfo">
+        update fb_game_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gameName != null and gameName != ''">game_name = #{gameName},</if>
+            <if test="gameHost != null and gameHost != ''">game_host = #{gameHost},</if>
+            <if test="liveStreamId != null">live_stream_id = #{liveStreamId},</if>
+            <if test="gameRound != null">game_round = #{gameRound},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="gameStatus != null and gameStatus != ''">game_status = #{gameStatus},</if>
+            <if test="gameSerialNumber != null and gameSerialNumber != ''">game_serial_number = #{gameSerialNumber},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="closeTime != null">close_time = #{closeTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFbGameInfoById" parameterType="Long">
+        delete from fb_game_info where id = #{id}
+    </delete>
+
+    <delete id="deleteFbGameInfoByIds" parameterType="String">
+        delete from fb_game_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

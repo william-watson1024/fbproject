@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FbLiveStreamMapper">
+    
+    <resultMap type="FbLiveStream" id="FbLiveStreamResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="description"    column="description"    />
+        <result property="url"    column="url"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="gameType"    column="game_type"    />
+        <result property="gameHost"    column="game_host"    />
+        <result property="gameStartTime"    column="game_start_time"    />
+    </resultMap>
+
+    <sql id="selectFbLiveStreamVo">
+        select id, name, description, url, is_active, game_type, game_host, game_start_time from fb_live_stream
+    </sql>
+
+    <select id="selectFbLiveStreamList" parameterType="FbLiveStream" resultMap="FbLiveStreamResult">
+        <include refid="selectFbLiveStreamVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="url != null  and url != ''"> and url = #{url}</if>
+            <if test="isActive != null "> and is_active = #{isActive}</if>
+            <if test="gameType != null  and gameType != ''"> and game_type = #{gameType}</if>
+            <if test="gameHost != null  and gameHost != ''"> and game_host = #{gameHost}</if>
+            <if test="gameStartTime != null "> and game_start_time = #{gameStartTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFbLiveStreamById" parameterType="Long" resultMap="FbLiveStreamResult">
+        <include refid="selectFbLiveStreamVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFbLiveStream" parameterType="FbLiveStream" useGeneratedKeys="true" keyProperty="id">
+        insert into fb_live_stream
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="description != null">description,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="gameType != null">game_type,</if>
+            <if test="gameHost != null and gameHost != ''">game_host,</if>
+            <if test="gameStartTime != null">game_start_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="description != null">#{description},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="gameType != null">#{gameType},</if>
+            <if test="gameHost != null and gameHost != ''">#{gameHost},</if>
+            <if test="gameStartTime != null">#{gameStartTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFbLiveStream" parameterType="FbLiveStream">
+        update fb_live_stream
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="gameType != null">game_type = #{gameType},</if>
+            <if test="gameHost != null and gameHost != ''">game_host = #{gameHost},</if>
+            <if test="gameStartTime != null">game_start_time = #{gameStartTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFbLiveStreamById" parameterType="Long">
+        delete from fb_live_stream where id = #{id}
+    </delete>
+
+    <delete id="deleteFbLiveStreamByIds" parameterType="String">
+        delete from fb_live_stream where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

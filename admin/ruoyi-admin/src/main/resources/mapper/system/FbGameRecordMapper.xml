@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FbGameRecordMapper">
+    
+    <resultMap type="FbGameRecord" id="FbGameRecordResult">
+        <result property="id"    column="id"    />
+        <result property="gameUserId"    column="game_user_id"    />
+        <result property="gameUserAccount"    column="game_user_account"    />
+        <result property="liveStreamId"    column="live_stream_id"    />
+        <result property="gameType"    column="game_type"    />
+        <result property="gameRound"    column="game_round"    />
+        <result property="betNum"    column="bet_num"    />
+        <result property="betName"    column="bet_name"    />
+        <result property="betContent"    column="bet_content"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="betTime"    column="bet_time"    />
+    </resultMap>
+
+    <sql id="selectFbGameRecordVo">
+        select id, game_user_id, game_user_account, live_stream_id, game_type, game_round, bet_num, bet_name, bet_content, is_active, bet_time from fb_game_record
+    </sql>
+
+    <select id="selectFbGameRecordList" parameterType="FbGameRecord" resultMap="FbGameRecordResult">
+        <include refid="selectFbGameRecordVo"/>
+        <where>  
+            <if test="gameUserId != null "> and game_user_id = #{gameUserId}</if>
+            <if test="gameUserAccount != null  and gameUserAccount != ''"> and game_user_account = #{gameUserAccount}</if>
+            <if test="liveStreamId != null "> and live_stream_id = #{liveStreamId}</if>
+            <if test="gameType != null  and gameType != ''"> and game_type = #{gameType}</if>
+            <if test="gameRound != null "> and game_round = #{gameRound}</if>
+            <if test="betNum != null "> and bet_num = #{betNum}</if>
+            <if test="betName != null  and betName != ''"> and bet_name like concat('%', #{betName}, '%')</if>
+            <if test="betContent != null  and betContent != ''"> and bet_content = #{betContent}</if>
+            <if test="isActive != null "> and is_active = #{isActive}</if>
+            <if test="betTime != null "> and bet_time = #{betTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFbGameRecordById" parameterType="Long" resultMap="FbGameRecordResult">
+        <include refid="selectFbGameRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFbGameRecord" parameterType="FbGameRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into fb_game_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gameUserId != null">game_user_id,</if>
+            <if test="gameUserAccount != null and gameUserAccount != ''">game_user_account,</if>
+            <if test="liveStreamId != null">live_stream_id,</if>
+            <if test="gameType != null and gameType != ''">game_type,</if>
+            <if test="gameRound != null">game_round,</if>
+            <if test="betNum != null">bet_num,</if>
+            <if test="betName != null and betName != ''">bet_name,</if>
+            <if test="betContent != null and betContent != ''">bet_content,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="betTime != null">bet_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gameUserId != null">#{gameUserId},</if>
+            <if test="gameUserAccount != null and gameUserAccount != ''">#{gameUserAccount},</if>
+            <if test="liveStreamId != null">#{liveStreamId},</if>
+            <if test="gameType != null and gameType != ''">#{gameType},</if>
+            <if test="gameRound != null">#{gameRound},</if>
+            <if test="betNum != null">#{betNum},</if>
+            <if test="betName != null and betName != ''">#{betName},</if>
+            <if test="betContent != null and betContent != ''">#{betContent},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="betTime != null">#{betTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFbGameRecord" parameterType="FbGameRecord">
+        update fb_game_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gameUserId != null">game_user_id = #{gameUserId},</if>
+            <if test="gameUserAccount != null and gameUserAccount != ''">game_user_account = #{gameUserAccount},</if>
+            <if test="liveStreamId != null">live_stream_id = #{liveStreamId},</if>
+            <if test="gameType != null and gameType != ''">game_type = #{gameType},</if>
+            <if test="gameRound != null">game_round = #{gameRound},</if>
+            <if test="betNum != null">bet_num = #{betNum},</if>
+            <if test="betName != null and betName != ''">bet_name = #{betName},</if>
+            <if test="betContent != null and betContent != ''">bet_content = #{betContent},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="betTime != null">bet_time = #{betTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFbGameRecordById" parameterType="Long">
+        delete from fb_game_record where id = #{id}
+    </delete>
+
+    <delete id="deleteFbGameRecordByIds" parameterType="String">
+        delete from fb_game_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

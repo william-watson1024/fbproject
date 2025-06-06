@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FbGameUserMapper">
+    
+    <resultMap type="FbGameUser" id="FbGameUserResult">
+        <result property="id"    column="id"    />
+        <result property="account"    column="account"    />
+        <result property="password"    column="password"    />
+        <result property="name"    column="name"    />
+        <result property="points"    column="points"    />
+    </resultMap>
+
+    <sql id="selectFbGameUserVo">
+        select id, account, password, name, points from fb_game_user
+    </sql>
+
+    <select id="selectFbGameUserList" parameterType="FbGameUser" resultMap="FbGameUserResult">
+        <include refid="selectFbGameUserVo"/>
+        <where>  
+            <if test="account != null  and account != ''"> and account = #{account}</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="points != null "> and points = #{points}</if>
+        </where>
+    </select>
+    
+    <select id="selectFbGameUserById" parameterType="Long" resultMap="FbGameUserResult">
+        <include refid="selectFbGameUserVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFbGameUser" parameterType="FbGameUser" useGeneratedKeys="true" keyProperty="id">
+        insert into fb_game_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null and account != ''">account,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="points != null">points,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null and account != ''">#{account},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="points != null">#{points},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFbGameUser" parameterType="FbGameUser">
+        update fb_game_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="points != null">points = #{points},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFbGameUserById" parameterType="Long">
+        delete from fb_game_user where id = #{id}
+    </delete>
+
+    <delete id="deleteFbGameUserByIds" parameterType="String">
+        delete from fb_game_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
