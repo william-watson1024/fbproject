@@ -101,4 +101,15 @@ public class FbGameUserController extends BaseController
     {
         return toAjax(fbGameUserService.deleteFbGameUserByIds(ids));
     }
+    /**
+     * 根据账号查询用户信息
+     */
+    @GetMapping("/byAccount")
+    public AjaxResult getUserByAccount(String account) {
+        FbGameUser user = fbGameUserService.selectUserByAccount(account);
+        if (user == null) {
+            return AjaxResult.error("账号不存在");
+        }
+        return AjaxResult.success("查询成功", user);
+    }
 }

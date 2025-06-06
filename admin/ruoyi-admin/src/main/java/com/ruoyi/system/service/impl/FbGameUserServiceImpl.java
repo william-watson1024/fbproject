@@ -90,4 +90,9 @@ public class FbGameUserServiceImpl implements IFbGameUserService
     {
         return fbGameUserMapper.deleteFbGameUserById(id);
     }
+
+    @Override
+    public FbGameUser selectUserByAccount(String account) {
+        return fbGameUserMapper.selectUserByAccount(account);
+    }
 }

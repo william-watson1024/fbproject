@@ -58,4 +58,6 @@ public interface IFbGameUserService
      * @return 结果
      */
     public int deleteFbGameUserById(Long id);
+
+    FbGameUser selectUserByAccount(String account);
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import com.ruoyi.system.domain.FbGameInfo;
 
@@ -58,4 +59,6 @@ public interface IFbGameInfoService
      * @return 结果
      */
     public int deleteFbGameInfoById(Long id);
+
+    public List<FbGameInfo> selectFbGameInfoListAfterTime(LocalDateTime time);
 }
