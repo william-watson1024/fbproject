@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gameHost != null and gameHost != ''">game_host,</if>
             <if test="liveStreamId != null">live_stream_id,</if>
             <if test="gameRound != null">game_round,</if>
-            <if test="result != null">result,</if>
+            <if test="result != null and result != ''">result,</if>
             <if test="gameStatus != null and gameStatus != ''">game_status,</if>
             <if test="gameSerialNumber != null and gameSerialNumber != ''">game_serial_number,</if>
             <if test="startTime != null">start_time,</if>
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gameHost != null and gameHost != ''">#{gameHost},</if>
             <if test="liveStreamId != null">#{liveStreamId},</if>
             <if test="gameRound != null">#{gameRound},</if>
-            <if test="result != null">#{result},</if>
+            <if test="result != null and result != ''">#{result},</if>
             <if test="gameStatus != null and gameStatus != ''">#{gameStatus},</if>
             <if test="gameSerialNumber != null and gameSerialNumber != ''">#{gameSerialNumber},</if>
             <if test="startTime != null">#{startTime},</if>
@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="gameHost != null and gameHost != ''">game_host = #{gameHost},</if>
             <if test="liveStreamId != null">live_stream_id = #{liveStreamId},</if>
             <if test="gameRound != null">game_round = #{gameRound},</if>
-            <if test="result != null">result = #{result},</if>
+            <if test="result != null and result != ''">result = #{result},</if>
             <if test="gameStatus != null and gameStatus != ''">game_status = #{gameStatus},</if>
             <if test="gameSerialNumber != null and gameSerialNumber != ''">game_serial_number = #{gameSerialNumber},</if>
             <if test="startTime != null">start_time = #{startTime},</if>

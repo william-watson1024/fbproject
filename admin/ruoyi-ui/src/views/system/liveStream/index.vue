@@ -9,10 +9,34 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="直播描述" prop="description">
+        <el-input
+          v-model="queryParams.description"
+          placeholder="请输入直播描述"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="直播链接" prop="url">
+        <el-input
+          v-model="queryParams.url"
+          placeholder="请输入直播链接"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="直播状态" prop="isActive">
         <el-input
           v-model="queryParams.isActive"
           placeholder="请输入直播状态"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="游戏类型" prop="gameType">
+        <el-input
+          v-model="queryParams.gameType"
+          placeholder="请输入游戏类型"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -134,13 +158,16 @@
           <el-input v-model="form.name" placeholder="请输入直播名称" />
         </el-form-item>
         <el-form-item label="直播描述" prop="description">
-          <el-input v-model="form.description" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.description" placeholder="请输入直播描述" />
         </el-form-item>
         <el-form-item label="直播链接" prop="url">
-          <el-input v-model="form.url" type="textarea" placeholder="请输入内容" />
+          <el-input v-model="form.url" placeholder="请输入直播链接" />
         </el-form-item>
         <el-form-item label="直播状态" prop="isActive">
           <el-input v-model="form.isActive" placeholder="请输入直播状态" />
+        </el-form-item>
+        <el-form-item label="游戏类型" prop="gameType">
+          <el-input v-model="form.gameType" placeholder="请输入游戏类型" />
         </el-form-item>
         <el-form-item label="游戏主播名称" prop="gameHost">
           <el-input v-model="form.gameHost" placeholder="请输入游戏主播名称" />
@@ -206,12 +233,24 @@ export default {
         name: [
           { required: true, message: "直播名称不能为空", trigger: "blur" }
         ],
+        description: [
+          { required: true, message: "直播描述不能为空", trigger: "blur" }
+        ],
         url: [
           { required: true, message: "直播链接不能为空", trigger: "blur" }
+        ],
+        isActive: [
+          { required: true, message: "直播状态不能为空", trigger: "blur" }
+        ],
+        gameType: [
+          { required: true, message: "游戏类型不能为空", trigger: "blur" }
         ],
         gameHost: [
           { required: true, message: "游戏主播名称不能为空", trigger: "blur" }
         ],
+        gameStartTime: [
+          { required: true, message: "游戏开始时间不能为空", trigger: "blur" }
+        ]
       }
     }
   },

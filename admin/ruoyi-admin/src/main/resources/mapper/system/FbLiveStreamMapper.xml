@@ -41,19 +41,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into fb_live_stream
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">name,</if>
-            <if test="description != null">description,</if>
+            <if test="description != null and description != ''">description,</if>
             <if test="url != null and url != ''">url,</if>
             <if test="isActive != null">is_active,</if>
-            <if test="gameType != null">game_type,</if>
+            <if test="gameType != null and gameType != ''">game_type,</if>
             <if test="gameHost != null and gameHost != ''">game_host,</if>
             <if test="gameStartTime != null">game_start_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">#{name},</if>
-            <if test="description != null">#{description},</if>
+            <if test="description != null and description != ''">#{description},</if>
             <if test="url != null and url != ''">#{url},</if>
             <if test="isActive != null">#{isActive},</if>
-            <if test="gameType != null">#{gameType},</if>
+            <if test="gameType != null and gameType != ''">#{gameType},</if>
             <if test="gameHost != null and gameHost != ''">#{gameHost},</if>
             <if test="gameStartTime != null">#{gameStartTime},</if>
          </trim>
@@ -63,10 +63,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update fb_live_stream
         <trim prefix="SET" suffixOverrides=",">
             <if test="name != null and name != ''">name = #{name},</if>
-            <if test="description != null">description = #{description},</if>
+            <if test="description != null and description != ''">description = #{description},</if>
             <if test="url != null and url != ''">url = #{url},</if>
             <if test="isActive != null">is_active = #{isActive},</if>
-            <if test="gameType != null">game_type = #{gameType},</if>
+            <if test="gameType != null and gameType != ''">game_type = #{gameType},</if>
             <if test="gameHost != null and gameHost != ''">game_host = #{gameHost},</if>
             <if test="gameStartTime != null">game_start_time = #{gameStartTime},</if>
         </trim>

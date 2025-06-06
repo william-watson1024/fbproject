@@ -49,6 +49,22 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="投注内容" prop="betContent">
+        <el-input
+          v-model="queryParams.betContent"
+          placeholder="请输入投注内容"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="下注状态" prop="isActive">
+        <el-input
+          v-model="queryParams.isActive"
+          placeholder="请输入下注状态"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="下注时间" prop="betTime">
         <el-date-picker clearable
           v-model="queryParams.betTime"
@@ -166,6 +182,9 @@
         <el-form-item label="直播房间ID" prop="liveStreamId">
           <el-input v-model="form.liveStreamId" placeholder="请输入直播房间ID" />
         </el-form-item>
+        <el-form-item label="游戏类型" prop="gameType">
+          <el-input v-model="form.gameType" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
         <el-form-item label="游戏局号" prop="gameRound">
           <el-input v-model="form.gameRound" placeholder="请输入游戏局号" />
         </el-form-item>
@@ -175,8 +194,11 @@
         <el-form-item label="下注名称" prop="betName">
           <el-input v-model="form.betName" placeholder="请输入下注名称" />
         </el-form-item>
-        <el-form-item label="投注内容">
-          <editor v-model="form.betContent" :min-height="192"/>
+        <el-form-item label="投注内容" prop="betContent">
+          <el-input v-model="form.betContent" placeholder="请输入投注内容" />
+        </el-form-item>
+        <el-form-item label="下注状态" prop="isActive">
+          <el-input v-model="form.isActive" placeholder="请输入下注状态" />
         </el-form-item>
         <el-form-item label="下注时间" prop="betTime">
           <el-date-picker clearable
@@ -249,7 +271,7 @@ export default {
           { required: true, message: "直播房间ID不能为空", trigger: "blur" }
         ],
         gameType: [
-          { required: true, message: "游戏类型不能为空", trigger: "change" }
+          { required: true, message: "游戏类型不能为空", trigger: "blur" }
         ],
         gameRound: [
           { required: true, message: "游戏局号不能为空", trigger: "blur" }
@@ -264,7 +286,7 @@ export default {
           { required: true, message: "投注内容不能为空", trigger: "blur" }
         ],
         isActive: [
-          { required: true, message: "下注状态不能为空", trigger: "change" }
+          { required: true, message: "下注状态不能为空", trigger: "blur" }
         ],
         betTime: [
           { required: true, message: "下注时间不能为空", trigger: "blur" }

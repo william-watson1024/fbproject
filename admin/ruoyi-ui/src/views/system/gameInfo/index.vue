@@ -196,6 +196,9 @@
         <el-form-item label="开奖结果" prop="result">
           <el-input v-model="form.result" placeholder="请输入开奖结果" />
         </el-form-item>
+        <el-form-item label="游戏状态" prop="gameStatus">
+          <el-input v-model="form.gameStatus" type="textarea" placeholder="请输入内容" />
+        </el-form-item>
         <el-form-item label="游戏局流水号" prop="gameSerialNumber">
           <el-input v-model="form.gameSerialNumber" placeholder="请输入游戏局流水号" />
         </el-form-item>
@@ -288,8 +291,11 @@ export default {
         gameRound: [
           { required: true, message: "当前局号不能为空", trigger: "blur" }
         ],
+        result: [
+          { required: true, message: "开奖结果不能为空", trigger: "blur" }
+        ],
         gameStatus: [
-          { required: true, message: "游戏状态不能为空", trigger: "change" }
+          { required: true, message: "游戏状态不能为空", trigger: "blur" }
         ],
         gameSerialNumber: [
           { required: true, message: "游戏局流水号不能为空", trigger: "blur" }
@@ -297,6 +303,12 @@ export default {
         startTime: [
           { required: true, message: "开局时间不能为空", trigger: "blur" }
         ],
+        closeTime: [
+          { required: true, message: "实际封盘时间不能为空", trigger: "blur" }
+        ],
+        endTime: [
+          { required: true, message: "结算时间不能为空", trigger: "blur" }
+        ]
       }
     }
   },

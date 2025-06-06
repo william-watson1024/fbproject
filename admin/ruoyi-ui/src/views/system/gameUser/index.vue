@@ -191,6 +191,9 @@ export default {
         name: [
           { required: true, message: "用户名不能为空", trigger: "blur" }
         ],
+        points: [
+          { required: true, message: "用户积分不能为空", trigger: "blur" }
+        ]
       }
     }
   },
