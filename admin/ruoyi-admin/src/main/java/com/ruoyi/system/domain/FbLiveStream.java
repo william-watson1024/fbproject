@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -45,9 +46,9 @@ public class FbLiveStream extends BaseEntity
     private String gameHost;
 
     /** 游戏开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "游戏开始时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date gameStartTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "游戏开始时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime gameStartTime;
 
     public void setId(Long id) 
     {
@@ -119,12 +120,12 @@ public class FbLiveStream extends BaseEntity
         return gameHost;
     }
 
-    public void setGameStartTime(Date gameStartTime) 
+    public void setGameStartTime(LocalDateTime gameStartTime)
     {
         this.gameStartTime = gameStartTime;
     }
 
-    public Date getGameStartTime() 
+    public LocalDateTime getGameStartTime()
     {
         return gameStartTime;
     }

@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -49,19 +50,19 @@ public class FbGameInfo extends BaseEntity
     private String gameSerialNumber;
 
     /** 开局时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "开局时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "开局时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startTime;
 
     /** 实际封盘时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "实际封盘时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date closeTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "实际封盘时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime closeTime;
 
     /** 结算时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "结算时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date endTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "结算时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime;
 
     public void setId(Long id) 
     {
@@ -143,32 +144,32 @@ public class FbGameInfo extends BaseEntity
         return gameSerialNumber;
     }
 
-    public void setStartTime(Date startTime) 
+    public void setStartTime(LocalDateTime startTime)
     {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() 
+    public LocalDateTime getStartTime()
     {
         return startTime;
     }
 
-    public void setCloseTime(Date closeTime) 
+    public void setCloseTime(LocalDateTime closeTime)
     {
         this.closeTime = closeTime;
     }
 
-    public Date getCloseTime() 
+    public LocalDateTime getCloseTime()
     {
         return closeTime;
     }
 
-    public void setEndTime(Date endTime) 
+    public void setEndTime(LocalDateTime endTime)
     {
         this.endTime = endTime;
     }
 
-    public Date getEndTime() 
+    public LocalDateTime getEndTime()
     {
         return endTime;
     }

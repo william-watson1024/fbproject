@@ -77,6 +77,9 @@ public class FbGameInfoController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody FbGameInfo fbGameInfo)
     {
+        System.out.println("Received startTime: " + fbGameInfo.getStartTime());
+        System.out.println("Received closeTime: " + fbGameInfo.getCloseTime());
+        System.out.println("Received endTime: " + fbGameInfo.getEndTime());
         return toAjax(fbGameInfoService.insertFbGameInfo(fbGameInfo));
     }
 

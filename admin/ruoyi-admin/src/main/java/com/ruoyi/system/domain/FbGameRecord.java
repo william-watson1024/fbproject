@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -57,9 +58,9 @@ public class FbGameRecord extends BaseEntity
     private Long isActive;
 
     /** 下注时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "下注时间", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date betTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Excel(name = "下注时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime betTime;
 
     public void setId(Long id) 
     {
@@ -161,12 +162,12 @@ public class FbGameRecord extends BaseEntity
         return isActive;
     }
 
-    public void setBetTime(Date betTime) 
+    public void setBetTime(LocalDateTime betTime)
     {
         this.betTime = betTime;
     }
 
-    public Date getBetTime() 
+    public LocalDateTime getBetTime()
     {
         return betTime;
     }

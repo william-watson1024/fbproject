@@ -52,24 +52,24 @@
       <el-form-item label="开局时间" prop="startTime">
         <el-date-picker clearable
           v-model="queryParams.startTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择开局时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="实际封盘时间" prop="closeTime">
         <el-date-picker clearable
           v-model="queryParams.closeTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择实际封盘时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="结算时间" prop="endTime">
         <el-date-picker clearable
           v-model="queryParams.endTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择结算时间">
         </el-date-picker>
       </el-form-item>
@@ -137,17 +137,17 @@
       <el-table-column label="游戏局流水号" align="center" prop="gameSerialNumber" />
       <el-table-column label="开局时间" align="center" prop="startTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="实际封盘时间" align="center" prop="closeTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.closeTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.closeTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="结算时间" align="center" prop="endTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -169,7 +169,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -205,24 +205,24 @@
         <el-form-item label="开局时间" prop="startTime">
           <el-date-picker clearable
             v-model="form.startTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择开局时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="实际封盘时间" prop="closeTime">
           <el-date-picker clearable
             v-model="form.closeTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择实际封盘时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="结算时间" prop="endTime">
           <el-date-picker clearable
             v-model="form.endTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择结算时间">
           </el-date-picker>
         </el-form-item>

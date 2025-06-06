@@ -52,8 +52,8 @@
       <el-form-item label="游戏开始时间" prop="gameStartTime">
         <el-date-picker clearable
           v-model="queryParams.gameStartTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择游戏开始时间">
         </el-date-picker>
       </el-form-item>
@@ -120,7 +120,7 @@
       <el-table-column label="游戏主播名称" align="center" prop="gameHost" />
       <el-table-column label="游戏开始时间" align="center" prop="gameStartTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.gameStartTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.gameStartTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -142,7 +142,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -175,8 +175,8 @@
         <el-form-item label="游戏开始时间" prop="gameStartTime">
           <el-date-picker clearable
             v-model="form.gameStartTime"
-            type="date"
-            value-format="yyyy-MM-dd"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择游戏开始时间">
           </el-date-picker>
         </el-form-item>
