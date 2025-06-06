@@ -1,21 +1,106 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost_3306_for
+ Source Server         : 本机
  Source Server Type    : MySQL
- Source Server Version : 80040 (8.0.40)
+ Source Server Version : 80300 (8.3.0)
  Source Host           : localhost:3306
  Source Schema         : fb
 
  Target Server Type    : MySQL
- Target Server Version : 80040 (8.0.40)
+ Target Server Version : 80300 (8.3.0)
  File Encoding         : 65001
 
- Date: 02/06/2025 22:08:26
+ Date: 06/06/2025 18:44:36
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for fb_game_info
+-- ----------------------------
+DROP TABLE IF EXISTS `fb_game_info`;
+CREATE TABLE `fb_game_info`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '游戏ID',
+  `game_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏名称',
+  `game_host` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏主播',
+  `live_stream_id` int NOT NULL COMMENT '房间号',
+  `game_round` int NOT NULL COMMENT '当前局号',
+  `result` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '开奖结果',
+  `game_status` enum('投注中','封盘','已开奖','已结算') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '投注中' COMMENT '游戏状态',
+  `game_serial_number` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏局流水号',
+  `start_time` datetime NOT NULL COMMENT '开局时间',
+  `close_time` datetime NULL DEFAULT NULL COMMENT '实际封盘时间',
+  `end_time` datetime NULL DEFAULT NULL COMMENT '结算时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of fb_game_info
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for fb_game_record
+-- ----------------------------
+DROP TABLE IF EXISTS `fb_game_record`;
+CREATE TABLE `fb_game_record`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '下注ID',
+  `game_user_id` int NOT NULL COMMENT '下注用户ID',
+  `game_user_account` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '下注用户账号',
+  `live_stream_id` int NOT NULL COMMENT '直播房间ID',
+  `game_type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏类型',
+  `game_round` int NOT NULL COMMENT '游戏局号',
+  `bet_num` int NOT NULL COMMENT '下注金额',
+  `bet_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '下注名称',
+  `bet_content` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '投注内容',
+  `is_active` int NOT NULL DEFAULT 0 COMMENT '下注状态',
+  `bet_time` datetime NOT NULL COMMENT '下注时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of fb_game_record
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for fb_game_user
+-- ----------------------------
+DROP TABLE IF EXISTS `fb_game_user`;
+CREATE TABLE `fb_game_user`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `account` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户账号',
+  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户密码',
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户名',
+  `points` int NULL DEFAULT 0 COMMENT '用户积分',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of fb_game_user
+-- ----------------------------
+INSERT INTO `fb_game_user` VALUES (3, '1', '1', '1', 1);
+INSERT INTO `fb_game_user` VALUES (4, '2', '2', '2', 2);
+
+-- ----------------------------
+-- Table structure for fb_live_stream
+-- ----------------------------
+DROP TABLE IF EXISTS `fb_live_stream`;
+CREATE TABLE `fb_live_stream`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '直播ID',
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '直播名称',
+  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT '直播描述',
+  `url` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '直播链接',
+  `is_active` tinyint(1) NULL DEFAULT 1 COMMENT '直播状态',
+  `game_type` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '游戏类型',
+  `game_host` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏主播名称',
+  `game_start_time` datetime NULL DEFAULT NULL COMMENT '游戏开始时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of fb_live_stream
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for gen_table
@@ -44,14 +129,15 @@ CREATE TABLE `gen_table`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of gen_table
 -- ----------------------------
-INSERT INTO `gen_table` VALUES (5, 'myfbuser', '投注积分用户表', NULL, NULL, 'Myfbuser', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'myfbuser', '投注积分用户管理', 'ruoyi', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48', NULL);
-INSERT INTO `gen_table` VALUES (6, 'myfbweb', '直播链接管理表', NULL, NULL, 'Myfbweb', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'myfbweb', '直播链接管理', 'ruoyi', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17', NULL);
-INSERT INTO `gen_table` VALUES (9, 'mybetrecord', '下注信息表', NULL, NULL, 'Mybetrecord', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'mybetrecord', '下注信息管理', 'ruoyi', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48', NULL);
+INSERT INTO `gen_table` VALUES (14, 'fb_game_info', '游戏信息表', NULL, NULL, 'FbGameInfo', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'gameInfo', '游戏信息管理', 'leo', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09', NULL);
+INSERT INTO `gen_table` VALUES (15, 'fb_game_record', '游戏记录表', NULL, NULL, 'FbGameRecord', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'gameRecord', '游戏记录管理', 'leo', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45', NULL);
+INSERT INTO `gen_table` VALUES (16, 'fb_game_user', '游戏用户表', NULL, NULL, 'FbGameUser', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'gameUser', '游戏用户管理', 'leo', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18', NULL);
+INSERT INTO `gen_table` VALUES (17, 'fb_live_stream', '直播网站表', NULL, NULL, 'FbLiveStream', 'crud', 'element-ui', 'com.ruoyi.system', 'system', 'liveStream', '直播网站管理', 'leo', '0', '/', '{\"parentMenuId\":2022}', 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28', NULL);
 
 -- ----------------------------
 -- Table structure for gen_table_column
@@ -81,145 +167,46 @@ CREATE TABLE `gen_table_column`  (
   `update_by` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`column_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 121 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of gen_table_column
 -- ----------------------------
-INSERT INTO `gen_table_column` VALUES (21, 5, 'id', '用户ID\r\n', 'int', 'Long', 'id', '1', '0', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48');
-INSERT INTO `gen_table_column` VALUES (22, 5, 'account', '用户账号', 'varchar(255)', 'String', 'account', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48');
-INSERT INTO `gen_table_column` VALUES (23, 5, 'password', '用户密码', 'varchar(255)', 'String', 'password', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48');
-INSERT INTO `gen_table_column` VALUES (24, 5, 'name', '用户名', 'varchar(255)', 'String', 'name', '0', '0', '0', '1', '1', '1', '1', 'LIKE', 'input', '', 4, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48');
-INSERT INTO `gen_table_column` VALUES (25, 5, 'points', '用户积分', 'int', 'Long', 'points', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:26:48');
-INSERT INTO `gen_table_column` VALUES (26, 6, 'id', '直播id\r\n', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17');
-INSERT INTO `gen_table_column` VALUES (27, 6, 'name', '直播名', 'varchar(255)', 'String', 'name', '0', '0', '0', '1', '1', '1', '1', 'LIKE', 'input', '', 2, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17');
-INSERT INTO `gen_table_column` VALUES (28, 6, 'description', '直播描述', 'text', 'String', 'description', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'textarea', '', 3, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17');
-INSERT INTO `gen_table_column` VALUES (29, 6, 'url', '直播链接', 'varchar(500)', 'String', 'url', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'textarea', '', 4, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17');
-INSERT INTO `gen_table_column` VALUES (30, 6, 'is_active', '直播状态', 'tinyint(1)', 'Integer', 'isActive', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2025-05-30 21:26:25', '', '2025-05-30 21:27:17');
-INSERT INTO `gen_table_column` VALUES (44, 9, 'id', '下注id', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (45, 9, 'my_fbuser_id', '下注用户id号', 'int', 'Long', 'myFbuserId', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (46, 9, 'my_fbuser_account', '下注用户账号', 'varchar(255)', 'String', 'myFbuserAccount', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (47, 9, 'bet_num', '下注数量', 'int', 'Long', 'betNum', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (48, 9, 'bet_name', '下注名', 'varchar(255)', 'String', 'betName', '0', '0', '0', '1', '1', '1', '1', 'LIKE', 'input', '', 5, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (49, 9, 'is_active', '下注处理状态', 'int', 'Long', 'isActive', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-INSERT INTO `gen_table_column` VALUES (50, 9, 'bet_time', '下注时间', 'datetime', 'Date', 'betTime', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'datetime', '', 7, 'admin', '2025-05-31 03:40:29', '', '2025-05-31 03:40:48');
-
--- ----------------------------
--- Table structure for mybetrecord
--- ----------------------------
-DROP TABLE IF EXISTS `mybetrecord`;
-CREATE TABLE `mybetrecord`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '下注id',
-  `my_fbuser_id` int NULL DEFAULT NULL COMMENT '下注用户id号',
-  `my_fbuser_account` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '下注用户账号',
-  `bet_num` int NULL DEFAULT NULL COMMENT '下注数量',
-  `bet_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '下注名',
-  `is_active` int NULL DEFAULT NULL COMMENT '下注处理状态',
-  `bet_time` datetime NULL DEFAULT NULL COMMENT '下注时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of mybetrecord
--- ----------------------------
-INSERT INTO `mybetrecord` VALUES (3, 1, '666', 20, 'cy', 0, '2025-05-01 00:00:00');
-INSERT INTO `mybetrecord` VALUES (4, 1, '123', 500, '1', 0, '2025-05-01 00:00:00');
-INSERT INTO `mybetrecord` VALUES (5, 1, 'user001', 300, '猜冠军', 0, '2025-05-31 00:00:00');
-INSERT INTO `mybetrecord` VALUES (6, 1, 'user001', 300, '猜冠军', 0, '2025-05-31 00:00:00');
-INSERT INTO `mybetrecord` VALUES (7, 1, 'user001', 300, '猜冠军', 0, '2025-05-31 00:00:00');
-INSERT INTO `mybetrecord` VALUES (8, 1, 'user001', 300, '猜冠军', 0, '2025-05-31 00:00:00');
-INSERT INTO `mybetrecord` VALUES (10, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:08:11');
-INSERT INTO `mybetrecord` VALUES (11, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:17:42');
-INSERT INTO `mybetrecord` VALUES (12, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:20:30');
-INSERT INTO `mybetrecord` VALUES (13, 1, '1', 1, '1', 0, '2025-06-25 00:00:00');
-INSERT INTO `mybetrecord` VALUES (14, 666, '666', 1, '1', 0, '2025-06-10 00:32:34');
-INSERT INTO `mybetrecord` VALUES (15, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:48:36');
-INSERT INTO `mybetrecord` VALUES (16, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:48:46');
-INSERT INTO `mybetrecord` VALUES (17, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 00:48:58');
-INSERT INTO `mybetrecord` VALUES (18, 1, '4Dc6heoglu', 10, '蟹', 0, '2025-06-02 01:13:03');
-INSERT INTO `mybetrecord` VALUES (19, 1, '4Dc6heoglu', 10, '葫芦', 0, '2025-06-02 01:15:13');
-INSERT INTO `mybetrecord` VALUES (20, 1, '4Dc6heoglu', 10, '鸡', 0, '2025-06-02 01:16:05');
-INSERT INTO `mybetrecord` VALUES (21, 5, 'yaYiTvQoZ3', 10, '葫芦', 0, '2025-06-02 01:17:39');
-INSERT INTO `mybetrecord` VALUES (22, 1, '4Dc6heoglu', 10, '鹿', 0, '2025-06-02 01:30:41');
-INSERT INTO `mybetrecord` VALUES (23, 1, '4Dc6heoglu', 10, '鱼', 0, '2025-06-02 15:34:09');
-INSERT INTO `mybetrecord` VALUES (24, 1, 'test', 10, '鹿', 0, '2025-06-02 21:31:55');
-INSERT INTO `mybetrecord` VALUES (25, 22, '20250602', 1000, '鹿', 0, '2025-06-02 21:37:34');
-INSERT INTO `mybetrecord` VALUES (26, 22, '20250602', 2000, '鹿', 0, '2025-06-02 21:38:14');
-
--- ----------------------------
--- Table structure for myfbuser
--- ----------------------------
-DROP TABLE IF EXISTS `myfbuser`;
-CREATE TABLE `myfbuser`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '用户ID\r\n',
-  `account` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '用户账号',
-  `password` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '用户密码',
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '用户名',
-  `points` int NULL DEFAULT NULL COMMENT '用户积分',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of myfbuser
--- ----------------------------
-INSERT INTO `myfbuser` VALUES (1, 'test', 'test11', 'Sheh Siu Wai', 990);
-INSERT INTO `myfbuser` VALUES (2, '8txKrrzUpz', 'AuZBZYqTSc', 'Pang Ka Ming', 966);
-INSERT INTO `myfbuser` VALUES (3, 'IH7RF0R2F5', 'ye0SoEhE4Z', 'Harada Hina', 780);
-INSERT INTO `myfbuser` VALUES (4, 'FsiXdsJ7Ub', 'SJlMUlvOGp', 'Yu Zitao', 452);
-INSERT INTO `myfbuser` VALUES (5, 'yaYiTvQoZ3', 'g1aLd5T2ty', 'Takeuchi Mitsuki', 636);
-INSERT INTO `myfbuser` VALUES (6, 'sVwyJYp9Dp', 'RKGTxxBwfv', 'Ishida Hana', 586);
-INSERT INTO `myfbuser` VALUES (7, '7RCAJVrCfP', 'Pc69gYLbnm', 'Tam Wai Lam', 3);
-INSERT INTO `myfbuser` VALUES (8, 'YW6cJnfewe', 'QEFUzcCVD3', 'Maruyama Sara', 677);
-INSERT INTO `myfbuser` VALUES (9, 'umZcUgOKUi', 'QuJjAYV7R9', 'Justin Stone', 617);
-INSERT INTO `myfbuser` VALUES (10, 'sTR25KhNjW', 'iYADdmdHKz', 'Hara Momoka', 389);
-INSERT INTO `myfbuser` VALUES (11, 'W7lGdvbsxl', 'stKM3kLVMX', 'Cheung Siu Wai', 456);
-INSERT INTO `myfbuser` VALUES (12, 'cPIwdpDT9p', 'jxA7M53FV1', 'Richard Mcdonald', 908);
-INSERT INTO `myfbuser` VALUES (13, 'pKrnJGMloz', 'MlOE8P6Uht', 'Wei Xiaoming', 97);
-INSERT INTO `myfbuser` VALUES (14, '4sofp6vtSW', 'sV1ua6vQzS', 'Wong Wai Lam', 20);
-INSERT INTO `myfbuser` VALUES (15, 'EGchIg0doX', 'va62HxhxxE', 'Dai Zitao', 455);
-INSERT INTO `myfbuser` VALUES (16, '2Y6eZksiXZ', '3kI4hLHfjE', 'Carl Henderson', 495);
-INSERT INTO `myfbuser` VALUES (17, 'Tk39N9BDh6', 'FSu5kuM4rO', 'Ryan Grant', 701);
-INSERT INTO `myfbuser` VALUES (18, 'HJpm9TYLLZ', 'ERdRrSoMmE', 'Ikeda Yuna', 911);
-INSERT INTO `myfbuser` VALUES (19, 'H5H18RRDk8', 'pkyuhL6BVf', 'Tsang Ho Yin', 520);
-INSERT INTO `myfbuser` VALUES (20, 'b50nftLqr1', 'SSFlfIzM0W', 'Chris Ross', 634);
-INSERT INTO `myfbuser` VALUES (21, 'william001', '123456', 'William', 0);
-INSERT INTO `myfbuser` VALUES (22, '20250602', 'll20250602', 'test', 11000);
-
--- ----------------------------
--- Table structure for myfbweb
--- ----------------------------
-DROP TABLE IF EXISTS `myfbweb`;
-CREATE TABLE `myfbweb`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '直播id\r\n',
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '直播名',
-  `description` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT '直播描述',
-  `url` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '直播链接',
-  `is_active` tinyint(1) NULL DEFAULT 1 COMMENT '直播状态',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of myfbweb
--- ----------------------------
-INSERT INTO `myfbweb` VALUES (2, 'Shen Yunxi', 'You can select any connections,                   ', 'http://drive.porterg.cn/ToysGames', 2);
-INSERT INTO `myfbweb` VALUES (3, 'Ren Xiaoming', 'Navicat Monitor can be installed                  ', 'https://www.choiyunfat2019.co.jp/MusicalInstrument', 2);
-INSERT INTO `myfbweb` VALUES (4, 'Du Rui', 'SQL Editor allows you to create                   ', 'http://auth.rar.co.jp/HealthBabyCare', 2);
-INSERT INTO `myfbweb` VALUES (5, 'Nakagawa Hikaru', 'A query is used to extract data                   ', 'https://live.bilibili.com/5678?live_from=81001&spm_id_from=333.1007.0.0', 1);
-INSERT INTO `myfbweb` VALUES (6, 'Zhou Zitao', 'All the Navicat Cloud objects are                 ', 'https://auth.hasegawatakuya94.xyz/Beauty', 1);
-INSERT INTO `myfbweb` VALUES (7, 'Jesus James', 'Such sessions are also susceptible                ', 'https://www.rick.us/Baby', 2);
-INSERT INTO `myfbweb` VALUES (8, '测试直播间', 'HTTP Tunneling is a method for                    ', 'https://jzb5ishk.zhubaicheng.com/player/2/1/0/3854481', 1);
-INSERT INTO `myfbweb` VALUES (9, 'Dai Zitao', 'Navicat provides powerful tools                   ', 'https://auth.xiaomingliang.us/ArtsHandicraftsSewing', 1);
-INSERT INTO `myfbweb` VALUES (10, 'Helen Turner', 'The Navigation pane employs tree                  ', 'https://video.gonzalezle816.net/HouseholdKitchenAppliances', 1);
-INSERT INTO `myfbweb` VALUES (11, 'Siu Wai San', 'SSH serves to prevent such vulnerabilities        ', 'http://video.lsho.biz/BaggageTravelEquipment', 2);
-INSERT INTO `myfbweb` VALUES (12, 'Samuel Mcdonald', 'It wasn’t raining when Noah built the ark.', 'https://www.lwu1985.co.jp/ArtsHandicraftsSewing', 1);
-INSERT INTO `myfbweb` VALUES (13, 'Cao Zitao', 'Navicat 15 has added support for                  ', 'http://image.hoc.xyz/AutomotivePartsAccessories', 2);
-INSERT INTO `myfbweb` VALUES (14, 'Shi Xiaoming', 'In the Objects tab, you can use                   ', 'http://video.ayatowa3.jp/ComputersElectronics', 2);
-INSERT INTO `myfbweb` VALUES (15, 'Kinoshita Mio', 'The Information Pane shows the                    ', 'http://auth.jiehongl.org/Appliances', 1);
-INSERT INTO `myfbweb` VALUES (16, 'Murata Ayato', 'Navicat authorizes you to make                    ', 'https://image.donalb.info/AppsGames', 1);
-INSERT INTO `myfbweb` VALUES (17, 'Shimizu Momoe', 'The reason why a great man is great               ', 'http://video.jhall.us/ToolsHomeDecoration', 2);
-INSERT INTO `myfbweb` VALUES (18, 'Sylvia Warren', 'If you wait, all that happens is you get older.', 'https://drive.ahunt.org/CollectiblesFineArt', 2);
-INSERT INTO `myfbweb` VALUES (19, 'Donna Jenkins', 'If opportunity doesn’t knock, build a door.', 'https://www.kennedyma.xyz/HouseholdKitchenAppliances', 2);
-INSERT INTO `myfbweb` VALUES (20, 'Mary Hernandez', 'The Synchronize to Database function              ', 'http://www.wsmo5.co.jp/Appliances', 1);
+INSERT INTO `gen_table_column` VALUES (86, 14, 'id', '游戏ID', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (87, 14, 'game_name', '游戏名称', 'varchar(255)', 'String', 'gameName', '0', '0', '1', '1', '1', '1', '1', 'LIKE', 'input', '', 2, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (88, 14, 'game_host', '游戏主播', 'varchar(255)', 'String', 'gameHost', '0', '0', '1', '1', '1', '1', '1', 'LIKE', 'input', '', 3, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (89, 14, 'live_stream_id', '房间号', 'int', 'Long', 'liveStreamId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (90, 14, 'game_round', '当前局号', 'int', 'Long', 'gameRound', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (91, 14, 'result', '开奖结果', 'varchar(255)', 'String', 'result', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (92, 14, 'game_status', '游戏状态', 'enum(\'投注中\',\'封盘\',\'已开奖\',\'已结算\')', 'String', 'gameStatus', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 7, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (93, 14, 'game_serial_number', '游戏局流水号', 'varchar(50)', 'String', 'gameSerialNumber', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 8, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (94, 14, 'start_time', '开局时间', 'datetime', 'Date', 'startTime', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'datetime', '', 9, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (95, 14, 'close_time', '实际封盘时间', 'datetime', 'Date', 'closeTime', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'datetime', '', 10, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (96, 14, 'end_time', '结算时间', 'datetime', 'Date', 'endTime', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'datetime', '', 11, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:37:09');
+INSERT INTO `gen_table_column` VALUES (97, 15, 'id', '下注ID', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (98, 15, 'game_user_id', '下注用户ID', 'int', 'Long', 'gameUserId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (99, 15, 'game_user_account', '下注用户账号', 'varchar(255)', 'String', 'gameUserAccount', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (100, 15, 'live_stream_id', '直播房间ID', 'int', 'Long', 'liveStreamId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (101, 15, 'game_type', '游戏类型', 'varchar(255)', 'String', 'gameType', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 5, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (102, 15, 'game_round', '游戏局号', 'int', 'Long', 'gameRound', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (103, 15, 'bet_num', '下注金额', 'int', 'Long', 'betNum', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 7, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (104, 15, 'bet_name', '下注名称', 'varchar(255)', 'String', 'betName', '0', '0', '1', '1', '1', '1', '1', 'LIKE', 'input', '', 8, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (105, 15, 'bet_content', '投注内容', 'text', 'String', 'betContent', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'editor', '', 9, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (106, 15, 'is_active', '下注状态', 'int', 'Long', 'isActive', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 10, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (107, 15, 'bet_time', '下注时间', 'datetime', 'Date', 'betTime', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'datetime', '', 11, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:39:45');
+INSERT INTO `gen_table_column` VALUES (108, 16, 'id', '用户ID', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18');
+INSERT INTO `gen_table_column` VALUES (109, 16, 'account', '用户账号', 'varchar(255)', 'String', 'account', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18');
+INSERT INTO `gen_table_column` VALUES (110, 16, 'password', '用户密码', 'varchar(255)', 'String', 'password', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18');
+INSERT INTO `gen_table_column` VALUES (111, 16, 'name', '用户名', 'varchar(255)', 'String', 'name', '0', '0', '1', '1', '1', '1', '1', 'LIKE', 'input', '', 4, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18');
+INSERT INTO `gen_table_column` VALUES (112, 16, 'points', '用户积分', 'int', 'Long', 'points', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:18');
+INSERT INTO `gen_table_column` VALUES (113, 17, 'id', '直播ID', 'int', 'Long', 'id', '1', '1', '0', '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (114, 17, 'name', '直播名称', 'varchar(255)', 'String', 'name', '0', '0', '1', '1', '1', '1', '1', 'LIKE', 'input', '', 2, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (115, 17, 'description', '直播描述', 'text', 'String', 'description', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'textarea', '', 3, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (116, 17, 'url', '直播链接', 'varchar(500)', 'String', 'url', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'textarea', '', 4, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (117, 17, 'is_active', '直播状态', 'tinyint(1)', 'Integer', 'isActive', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (118, 17, 'game_type', '游戏类型', 'varchar(255)', 'String', 'gameType', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'select', '', 6, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (119, 17, 'game_host', '游戏主播名称', 'varchar(255)', 'String', 'gameHost', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 7, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
+INSERT INTO `gen_table_column` VALUES (120, 17, 'game_start_time', '游戏开始时间', 'datetime', 'Date', 'gameStartTime', '0', '0', '0', '1', '1', '1', '1', 'EQ', 'datetime', '', 8, 'admin', '2025-06-06 19:09:18', '', '2025-06-06 19:52:28');
 
 -- ----------------------------
 -- Table structure for sys_config
@@ -237,7 +224,7 @@ CREATE TABLE `sys_config`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`config_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '参数配置表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '参数配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_config
@@ -271,7 +258,7 @@ CREATE TABLE `sys_dept`  (
   `update_by` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`dept_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 200 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 200 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '部门表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_dept
@@ -307,7 +294,7 @@ CREATE TABLE `sys_dict_data`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典数据表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_dict_data
@@ -358,7 +345,7 @@ CREATE TABLE `sys_dict_type`  (
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_id`) USING BTREE,
   UNIQUE INDEX `dict_type`(`dict_type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_dict_type
@@ -393,7 +380,7 @@ CREATE TABLE `sys_job`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`job_id`, `job_name`, `job_group`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_job
@@ -416,7 +403,7 @@ CREATE TABLE `sys_job_log`  (
   `exception_info` varchar(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '异常信息',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -439,7 +426,7 @@ CREATE TABLE `sys_logininfor`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_sys_logininfor_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_logininfor_lt`(`login_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 132 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '系统访问记录' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 138 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -472,10 +459,16 @@ INSERT INTO `sys_logininfor` VALUES (124, 'admin', '127.0.0.1', '内网IP', 'Chr
 INSERT INTO `sys_logininfor` VALUES (125, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误', '2025-05-31 13:21:47');
 INSERT INTO `sys_logininfor` VALUES (126, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-31 13:21:50');
 INSERT INTO `sys_logininfor` VALUES (127, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-05-31 21:48:36');
-INSERT INTO `sys_logininfor` VALUES (128, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-02 04:06:44');
-INSERT INTO `sys_logininfor` VALUES (129, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-02 15:34:41');
-INSERT INTO `sys_logininfor` VALUES (130, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-02 16:34:10');
-INSERT INTO `sys_logininfor` VALUES (131, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-02 21:32:25');
+INSERT INTO `sys_logininfor` VALUES (128, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-02 01:55:17');
+INSERT INTO `sys_logininfor` VALUES (129, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码已失效', '2025-06-06 19:03:24');
+INSERT INTO `sys_logininfor` VALUES (130, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误', '2025-06-06 19:03:26');
+INSERT INTO `sys_logininfor` VALUES (131, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 19:03:29');
+INSERT INTO `sys_logininfor` VALUES (132, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 19:51:52');
+INSERT INTO `sys_logininfor` VALUES (133, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '1', '验证码错误', '2025-06-06 18:13:13');
+INSERT INTO `sys_logininfor` VALUES (134, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 18:13:15');
+INSERT INTO `sys_logininfor` VALUES (135, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 18:31:44');
+INSERT INTO `sys_logininfor` VALUES (136, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '退出成功', '2025-06-06 18:44:12');
+INSERT INTO `sys_logininfor` VALUES (137, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 18:44:16');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -503,7 +496,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2065 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2089 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -511,7 +504,7 @@ CREATE TABLE `sys_menu`  (
 INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', NULL, '', '', 1, 0, 'M', '0', '0', '', 'system', 'admin', '2025-05-30 17:29:14', '', NULL, '系统管理目录');
 INSERT INTO `sys_menu` VALUES (2, '系统监控', 0, 2, 'monitor', NULL, '', '', 1, 0, 'M', '0', '0', '', 'monitor', 'admin', '2025-05-30 17:29:14', '', NULL, '系统监控目录');
 INSERT INTO `sys_menu` VALUES (3, '系统工具', 0, 3, 'tool', NULL, '', '', 1, 0, 'M', '0', '0', '', 'tool', 'admin', '2025-05-30 17:29:14', '', NULL, '系统工具目录');
-INSERT INTO `sys_menu` VALUES (4, '若依官网', 0, 4, 'http://ruoyi.vip', NULL, '', '', 0, 0, 'M', '0', '0', '', 'guide', 'admin', '2025-05-30 17:29:14', '', NULL, '若依官网地址');
+INSERT INTO `sys_menu` VALUES (4, '若依官网', 0, 4, 'http://ruoyi.vip', NULL, '', '', 0, 0, 'M', '1', '0', '', 'guide', 'admin', '2025-05-30 17:29:14', 'admin', '2025-06-06 18:16:30', '若依官网地址');
 INSERT INTO `sys_menu` VALUES (100, '用户管理', 1, 1, 'user', 'system/user/index', '', '', 1, 0, 'C', '0', '0', 'system:user:list', 'user', 'admin', '2025-05-30 17:29:14', '', NULL, '用户管理菜单');
 INSERT INTO `sys_menu` VALUES (101, '角色管理', 1, 2, 'role', 'system/role/index', '', '', 1, 0, 'C', '0', '0', 'system:role:list', 'peoples', 'admin', '2025-05-30 17:29:14', '', NULL, '角色管理菜单');
 INSERT INTO `sys_menu` VALUES (102, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '', 1, 0, 'C', '0', '0', 'system:menu:list', 'tree-table', 'admin', '2025-05-30 17:29:14', '', NULL, '菜单管理菜单');
@@ -594,24 +587,30 @@ INSERT INTO `sys_menu` VALUES (1058, '导入代码', 116, 4, '#', '', '', '', 1,
 INSERT INTO `sys_menu` VALUES (1059, '预览代码', 116, 5, '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview', '#', 'admin', '2025-05-30 17:29:15', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (1060, '生成代码', 116, 6, '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code', '#', 'admin', '2025-05-30 17:29:15', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2022, '核心功能', 0, 1, 'core', NULL, NULL, '', 1, 0, 'M', '0', '0', NULL, 'dashboard', 'admin', '2025-05-30 21:12:14', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2035, '直播链接管理', 2022, 1, 'myfbweb', 'system/myfbweb/index', NULL, '', 1, 0, 'C', '0', '0', 'system:myfbweb:list', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '直播链接管理菜单');
-INSERT INTO `sys_menu` VALUES (2036, '直播链接管理查询', 2035, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbweb:query', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2037, '直播链接管理新增', 2035, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbweb:add', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2038, '直播链接管理修改', 2035, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbweb:edit', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2039, '直播链接管理删除', 2035, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbweb:remove', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2040, '直播链接管理导出', 2035, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbweb:export', '#', 'admin', '2025-05-30 21:31:44', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2041, '投注积分用户管理', 2022, 1, 'myfbuser', 'system/myfbuser/index', NULL, '', 1, 0, 'C', '0', '0', 'system:myfbuser:list', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '投注积分用户管理菜单');
-INSERT INTO `sys_menu` VALUES (2042, '投注积分用户管理查询', 2041, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbuser:query', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2043, '投注积分用户管理新增', 2041, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbuser:add', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2044, '投注积分用户管理修改', 2041, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbuser:edit', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2045, '投注积分用户管理删除', 2041, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbuser:remove', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2046, '投注积分用户管理导出', 2041, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:myfbuser:export', '#', 'admin', '2025-05-30 21:31:55', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2059, '下注信息管理', 2022, 1, 'mybetrecord', 'system/mybetrecord/index', NULL, '', 1, 0, 'C', '0', '0', 'system:mybetrecord:list', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '下注信息管理菜单');
-INSERT INTO `sys_menu` VALUES (2060, '下注信息管理查询', 2059, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:mybetrecord:query', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2061, '下注信息管理新增', 2059, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:mybetrecord:add', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2062, '下注信息管理修改', 2059, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:mybetrecord:edit', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2063, '下注信息管理删除', 2059, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:mybetrecord:remove', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '');
-INSERT INTO `sys_menu` VALUES (2064, '下注信息管理导出', 2059, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:mybetrecord:export', '#', 'admin', '2025-05-31 03:42:01', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2065, '游戏信息管理', 2022, 1, 'gameInfo', 'system/gameInfo/index', NULL, '', 1, 0, 'C', '0', '0', 'system:gameInfo:list', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '游戏信息管理菜单');
+INSERT INTO `sys_menu` VALUES (2066, '游戏信息管理查询', 2065, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameInfo:query', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2067, '游戏信息管理新增', 2065, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameInfo:add', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2068, '游戏信息管理修改', 2065, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameInfo:edit', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2069, '游戏信息管理删除', 2065, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameInfo:remove', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2070, '游戏信息管理导出', 2065, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameInfo:export', '#', 'admin', '2025-06-06 19:20:54', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2071, '游戏用户管理', 2022, 1, 'gameUser', 'system/gameUser/index', NULL, '', 1, 0, 'C', '0', '0', 'system:gameUser:list', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '游戏用户管理菜单');
+INSERT INTO `sys_menu` VALUES (2072, '游戏用户管理查询', 2071, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameUser:query', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2073, '游戏用户管理新增', 2071, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameUser:add', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2074, '游戏用户管理修改', 2071, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameUser:edit', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2075, '游戏用户管理删除', 2071, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameUser:remove', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2076, '游戏用户管理导出', 2071, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameUser:export', '#', 'admin', '2025-06-06 19:53:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2077, '游戏记录管理', 2022, 1, 'gameRecord', 'system/gameRecord/index', NULL, '', 1, 0, 'C', '0', '0', 'system:gameRecord:list', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '游戏记录管理菜单');
+INSERT INTO `sys_menu` VALUES (2078, '游戏记录管理查询', 2077, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameRecord:query', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2079, '游戏记录管理新增', 2077, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameRecord:add', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2080, '游戏记录管理修改', 2077, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameRecord:edit', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2081, '游戏记录管理删除', 2077, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameRecord:remove', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2082, '游戏记录管理导出', 2077, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:gameRecord:export', '#', 'admin', '2025-06-06 19:53:49', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2083, '直播网站管理', 2022, 1, 'liveStream', 'system/liveStream/index', NULL, '', 1, 0, 'C', '0', '0', 'system:liveStream:list', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '直播网站管理菜单');
+INSERT INTO `sys_menu` VALUES (2084, '直播网站管理查询', 2083, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:liveStream:query', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2085, '直播网站管理新增', 2083, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:liveStream:add', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2086, '直播网站管理修改', 2083, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:liveStream:edit', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2087, '直播网站管理删除', 2083, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:liveStream:remove', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2088, '直播网站管理导出', 2083, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:liveStream:export', '#', 'admin', '2025-06-06 19:54:06', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -629,7 +628,7 @@ CREATE TABLE `sys_notice`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`notice_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '通知公告表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '通知公告表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_notice
@@ -663,7 +662,7 @@ CREATE TABLE `sys_oper_log`  (
   INDEX `idx_sys_oper_log_bt`(`business_type` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_ot`(`oper_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 173 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '操作日志记录' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 197 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_oper_log
@@ -725,22 +724,46 @@ INSERT INTO `sys_oper_log` VALUES (153, '下注信息管理', 1, 'com.ruoyi.syst
 INSERT INTO `sys_oper_log` VALUES (154, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"cy\",\"multiple\":5}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-05-31 13:29:51', 25);
 INSERT INTO `sys_oper_log` VALUES (155, '下注信息管理', 1, 'com.ruoyi.system.controller.MybetrecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord', '127.0.0.1', '内网IP', '{\"betName\":\"1\",\"betNum\":500,\"betTime\":\"2025-05-01\",\"id\":4,\"isActive\":1,\"myFbuserAccount\":\"123\",\"myFbuserId\":1,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-05-31 13:31:05', 14);
 INSERT INTO `sys_oper_log` VALUES (156, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"0\",\"multiple\":50}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-05-31 13:31:13', 18);
-INSERT INTO `sys_oper_log` VALUES (157, '下注信息管理', 3, 'com.ruoyi.system.controller.MybetrecordController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/mybetrecord/9', '127.0.0.1', '内网IP', '[9]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 00:08:31', 11);
-INSERT INTO `sys_oper_log` VALUES (158, '下注信息管理', 1, 'com.ruoyi.system.controller.MybetrecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord', '127.0.0.1', '内网IP', '{\"params\":{}}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1\r\n### The error may exist in file [D:\\fb\\fb\\RuoYi-Vue\\ruoyi-admin\\target\\classes\\mapper\\system\\MybetrecordMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.MybetrecordMapper.insertMybetrecord-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into mybetrecord\r\n### Cause: java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1\n; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\' at line 1', '2025-06-02 00:23:57', 75);
-INSERT INTO `sys_oper_log` VALUES (159, '下注信息管理', 1, 'com.ruoyi.system.controller.MybetrecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord', '127.0.0.1', '内网IP', '{\"betName\":\"1\",\"betNum\":1,\"betTime\":\"2025-06-25 00:00:00\",\"id\":13,\"isActive\":1,\"myFbuserAccount\":\"1\",\"myFbuserId\":1,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 00:34:22', 119);
-INSERT INTO `sys_oper_log` VALUES (160, '下注信息管理', 1, 'com.ruoyi.system.controller.MybetrecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord', '127.0.0.1', '内网IP', '{\"betName\":\"1\",\"betNum\":1,\"betTime\":\"2025-06-10 00:34:34\",\"id\":14,\"isActive\":1,\"myFbuserAccount\":\"666\",\"myFbuserId\":666,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 00:34:49', 4);
-INSERT INTO `sys_oper_log` VALUES (161, '下注信息管理', 2, 'com.ruoyi.system.controller.MybetrecordController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/mybetrecord', '127.0.0.1', '内网IP', '{\"betName\":\"1\",\"betNum\":1,\"betTime\":\"2025-06-10 00:32:34\",\"id\":14,\"isActive\":1,\"myFbuserAccount\":\"666\",\"myFbuserId\":666,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 00:35:12', 9);
-INSERT INTO `sys_oper_log` VALUES (162, '投注积分用户管理', 2, 'com.ruoyi.system.controller.MyfbuserController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/myfbuser', '127.0.0.1', '内网IP', '{\"account\":\"4Dc6heoglu\",\"id\":1,\"name\":\"Sheh Siu Wai\",\"params\":{},\"points\":1350}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 01:15:39', 17);
-INSERT INTO `sys_oper_log` VALUES (163, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"葫芦\",\"multiple\":3}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-02 01:18:06', 74);
-INSERT INTO `sys_oper_log` VALUES (164, '投注积分用户管理', 2, 'com.ruoyi.system.controller.MyfbuserController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/myfbuser', '127.0.0.1', '内网IP', '{\"account\":\"4Dc6heoglu\",\"id\":1,\"name\":\"Sheh Siu Wai\",\"params\":{},\"points\":200}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 01:33:42', 4);
-INSERT INTO `sys_oper_log` VALUES (165, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"鹿\",\"multiple\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-02 01:39:25', 11);
-INSERT INTO `sys_oper_log` VALUES (166, '投注积分用户管理', 2, 'com.ruoyi.system.controller.MyfbuserController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/myfbuser', '127.0.0.1', '内网IP', '{\"account\":\"4Dc6heoglu\",\"id\":1,\"name\":\"Sheh Siu Wai\",\"params\":{},\"points\":500}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 15:34:58', 25);
-INSERT INTO `sys_oper_log` VALUES (167, '直播链接管理', 3, 'com.ruoyi.system.controller.MyfbwebController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/myfbweb/1', '127.0.0.1', '内网IP', '[1]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 21:34:55', 23);
-INSERT INTO `sys_oper_log` VALUES (168, '直播链接管理', 5, 'com.ruoyi.system.controller.MyfbwebController.export()', 'POST', 1, 'admin', '研发部门', '/system/myfbweb/export', '127.0.0.1', '内网IP', '{\"pageSize\":\"10\",\"pageNum\":\"1\"}', NULL, 0, NULL, '2025-06-02 21:35:11', 1072);
-INSERT INTO `sys_oper_log` VALUES (169, '投注积分用户管理', 2, 'com.ruoyi.system.controller.MyfbuserController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/myfbuser', '127.0.0.1', '内网IP', '{\"account\":\"test\",\"id\":1,\"name\":\"Sheh Siu Wai\",\"params\":{},\"points\":990}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 21:36:04', 6);
-INSERT INTO `sys_oper_log` VALUES (170, '投注积分用户管理', 1, 'com.ruoyi.system.controller.MyfbuserController.add()', 'POST', 1, 'admin', '研发部门', '/system/myfbuser', '127.0.0.1', '内网IP', '{\"account\":\"20250602\",\"name\":\"test\",\"params\":{},\"points\":10000}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-02 21:36:43', 4);
-INSERT INTO `sys_oper_log` VALUES (171, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"熊\",\"multiple\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-02 21:38:04', 28);
-INSERT INTO `sys_oper_log` VALUES (172, '处理下注记录', 2, 'com.ruoyi.system.controller.MybetrecordController.processBetRecord()', 'POST', 1, 'admin', '研发部门', '/system/mybetrecord/process', '127.0.0.1', '内网IP', '{\"betName\":\"鹿\",\"multiple\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-02 21:38:25', 16);
+INSERT INTO `sys_oper_log` VALUES (157, '代码生成', 3, 'com.ruoyi.generator.controller.GenController.remove()', 'DELETE', 1, 'admin', '研发部门', '/tool/gen/9', '127.0.0.1', '内网IP', '[9]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:03:47', 34);
+INSERT INTO `sys_oper_log` VALUES (158, '代码生成', 3, 'com.ruoyi.generator.controller.GenController.remove()', 'DELETE', 1, 'admin', '研发部门', '/tool/gen/5', '127.0.0.1', '内网IP', '[5]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:03:49', 11);
+INSERT INTO `sys_oper_log` VALUES (159, '代码生成', 3, 'com.ruoyi.generator.controller.GenController.remove()', 'DELETE', 1, 'admin', '研发部门', '/tool/gen/6', '127.0.0.1', '内网IP', '[6]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:03:50', 10);
+INSERT INTO `sys_oper_log` VALUES (160, '代码生成', 6, 'com.ruoyi.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', '研发部门', '/tool/gen/importTable', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_record,fb_game_info,fb_live_stream,fb_game_user\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:04:18', 123);
+INSERT INTO `sys_oper_log` VALUES (161, '代码生成', 3, 'com.ruoyi.generator.controller.GenController.remove()', 'DELETE', 1, 'admin', '研发部门', '/tool/gen/10,11,12,13', '127.0.0.1', '内网IP', '[10,11,12,13]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:07:53', 10);
+INSERT INTO `sys_oper_log` VALUES (162, '代码生成', 6, 'com.ruoyi.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', '研发部门', '/tool/gen/importTable', '127.0.0.1', '内网IP', '{\"tables\":\"fb_live_stream,fb_game_info,fb_game_record,fb_game_user\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:09:18', 81);
+INSERT INTO `sys_oper_log` VALUES (163, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"gameInfo\",\"className\":\"FbGameInfo\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"游戏ID\",\"columnId\":86,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"GameName\",\"columnComment\":\"游戏名称\",\"columnId\":87,\"columnName\":\"game_name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameName\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"GameHost\",\"columnComment\":\"游戏主播\",\"columnId\":88,\"columnName\":\"game_host\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameHost\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":3,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"LiveStreamId\",\"columnComment\":\"房间号\",\"columnId\":89,\"columnName\":\"live_stream_id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:19:23', 39);
+INSERT INTO `sys_oper_log` VALUES (164, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_info\"}', NULL, 0, NULL, '2025-06-06 19:19:34', 164);
+INSERT INTO `sys_oper_log` VALUES (165, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:32', 15);
+INSERT INTO `sys_oper_log` VALUES (166, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:36', 3);
+INSERT INTO `sys_oper_log` VALUES (167, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:38', 3);
+INSERT INTO `sys_oper_log` VALUES (168, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:42', 3);
+INSERT INTO `sys_oper_log` VALUES (169, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:46', 3);
+INSERT INTO `sys_oper_log` VALUES (170, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:28:50', 3);
+INSERT INTO `sys_oper_log` VALUES (171, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-06\",\"endTime\":\"2025-06-06\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-06\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:29:51', 4);
+INSERT INTO `sys_oper_log` VALUES (172, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-04\",\"endTime\":\"2025-06-11\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-10\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:34:46', 68);
+INSERT INTO `sys_oper_log` VALUES (173, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-04\",\"endTime\":\"2025-06-11\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-10\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:34:50', 4);
+INSERT INTO `sys_oper_log` VALUES (174, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-04\",\"endTime\":\"2025-06-11\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-10\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:34:54', 4);
+INSERT INTO `sys_oper_log` VALUES (175, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-04\",\"endTime\":\"2025-06-11\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"Y\",\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-10\"}', NULL, 1, '\r\n### Error updating database.  Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\r\n### The error may exist in file [D:\\fbproject\\admin\\ruoyi-admin\\target\\classes\\mapper\\system\\FbGameInfoMapper.xml]\r\n### The error may involve com.ruoyi.system.mapper.FbGameInfoMapper.insertFbGameInfo-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into fb_game_info          ( game_name,             game_host,             live_stream_id,             game_round,             result,             game_status,             game_serial_number,             start_time,             close_time,             end_time )           values ( ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: java.sql.SQLException: Data truncated for column \'game_status\' at row 1\n; Data truncated for column \'game_status\' at row 1; nested exception is java.sql.SQLException: Data truncated for column \'game_status\' at row 1', '2025-06-06 19:34:58', 3);
+INSERT INTO `sys_oper_log` VALUES (176, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"gameInfo\",\"className\":\"FbGameInfo\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"游戏ID\",\"columnId\":86,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:19:23\",\"usableColumn\":false},{\"capJavaField\":\"GameName\",\"columnComment\":\"游戏名称\",\"columnId\":87,\"columnName\":\"game_name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameName\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:19:23\",\"usableColumn\":false},{\"capJavaField\":\"GameHost\",\"columnComment\":\"游戏主播\",\"columnId\":88,\"columnName\":\"game_host\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameHost\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":3,\"superColumn\":false,\"tableId\":14,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:19:23\",\"usableColumn\":false},{\"capJavaField\":\"LiveStreamId\",\"columnComment\":\"房间号\",\"columnId\":89,\"columnName\":\"live_stream_id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":t', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:37:09', 64);
+INSERT INTO `sys_oper_log` VALUES (177, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_info\"}', NULL, 0, NULL, '2025-06-06 19:37:18', 147);
+INSERT INTO `sys_oper_log` VALUES (178, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"id\":1,\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-02\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:38:28', 33);
+INSERT INTO `sys_oper_log` VALUES (179, '游戏信息管理', 2, 'com.ruoyi.system.controller.FbGameInfoController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-24\",\"endTime\":\"2025-06-11\",\"gameHost\":\"1\",\"gameName\":\"1\",\"gameRound\":1,\"gameSerialNumber\":\"1\",\"gameStatus\":\"投注中\",\"id\":1,\"liveStreamId\":1,\"params\":{},\"result\":\"1\",\"startTime\":\"2025-06-02\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:38:37', 12);
+INSERT INTO `sys_oper_log` VALUES (180, '游戏信息管理', 3, 'com.ruoyi.system.controller.FbGameInfoController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/gameInfo/1', '127.0.0.1', '内网IP', '[1]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:38:41', 15);
+INSERT INTO `sys_oper_log` VALUES (181, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"gameRecord\",\"className\":\"FbGameRecord\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"下注ID\",\"columnId\":97,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":15,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"GameUserId\",\"columnComment\":\"下注用户ID\",\"columnId\":98,\"columnName\":\"game_user_id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameUserId\",\"javaType\":\"Long\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":15,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"GameUserAccount\",\"columnComment\":\"下注用户账号\",\"columnId\":99,\"columnName\":\"game_user_account\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"gameUserAccount\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":3,\"superColumn\":false,\"tableId\":15,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"LiveStreamId\",\"columnComment\":\"直播房间ID\",\"columnId\":100,\"columnName\":\"live_stream_id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQu', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:39:45', 60);
+INSERT INTO `sys_oper_log` VALUES (182, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_record\"}', NULL, 0, NULL, '2025-06-06 19:39:47', 192);
+INSERT INTO `sys_oper_log` VALUES (183, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"user\",\"className\":\"FbGameUser\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"用户ID\",\"columnId\":108,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Account\",\"columnComment\":\"用户账号\",\"columnId\":109,\"columnName\":\"account\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"account\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Password\",\"columnComment\":\"用户密码\",\"columnId\":110,\"columnName\":\"password\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"password\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":3,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Name\",\"columnComment\":\"用户名\",\"columnId\":111,\"columnName\":\"name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"name\"', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:40:10', 25);
+INSERT INTO `sys_oper_log` VALUES (184, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"stream\",\"className\":\"FbLiveStream\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"直播ID\",\"columnId\":113,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Name\",\"columnComment\":\"直播名称\",\"columnId\":114,\"columnName\":\"name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"name\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Description\",\"columnComment\":\"直播描述\",\"columnId\":115,\"columnName\":\"description\",\"columnType\":\"text\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"textarea\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"0\",\"javaField\":\"description\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":false,\"sort\":3,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"usableColumn\":false},{\"capJavaField\":\"Url\",\"columnComment\":\"直播链接\",\"columnId\":116,\"columnName\":\"url\",\"columnType\":\"varchar(500)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"textarea\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"u', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:40:37', 26);
+INSERT INTO `sys_oper_log` VALUES (185, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_user\"}', NULL, 0, NULL, '2025-06-06 19:40:39', 60);
+INSERT INTO `sys_oper_log` VALUES (186, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_live_stream\"}', NULL, 0, NULL, '2025-06-06 19:40:40', 65);
+INSERT INTO `sys_oper_log` VALUES (187, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"gameUser\",\"className\":\"FbGameUser\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"用户ID\",\"columnId\":108,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:09\",\"usableColumn\":false},{\"capJavaField\":\"Account\",\"columnComment\":\"用户账号\",\"columnId\":109,\"columnName\":\"account\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"account\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:09\",\"usableColumn\":false},{\"capJavaField\":\"Password\",\"columnComment\":\"用户密码\",\"columnId\":110,\"columnName\":\"password\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"password\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":true,\"sort\":3,\"superColumn\":false,\"tableId\":16,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:09\",\"usableColumn\":false},{\"capJavaField\":\"Name\",\"columnComment\":\"用户名\",\"columnId\":111,\"columnName\":\"name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:52:18', 46);
+INSERT INTO `sys_oper_log` VALUES (188, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'PUT', 1, 'admin', '研发部门', '/tool/gen', '127.0.0.1', '内网IP', '{\"businessName\":\"liveStream\",\"className\":\"FbLiveStream\",\"columns\":[{\"capJavaField\":\"Id\",\"columnComment\":\"直播ID\",\"columnId\":113,\"columnName\":\"id\",\"columnType\":\"int\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":false,\"htmlType\":\"input\",\"increment\":true,\"insert\":true,\"isIncrement\":\"1\",\"isInsert\":\"1\",\"isPk\":\"1\",\"isRequired\":\"0\",\"javaField\":\"id\",\"javaType\":\"Long\",\"list\":false,\"params\":{},\"pk\":true,\"query\":false,\"queryType\":\"EQ\",\"required\":false,\"sort\":1,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:37\",\"usableColumn\":false},{\"capJavaField\":\"Name\",\"columnComment\":\"直播名称\",\"columnId\":114,\"columnName\":\"name\",\"columnType\":\"varchar(255)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"input\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"1\",\"javaField\":\"name\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"LIKE\",\"required\":true,\"sort\":2,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:37\",\"usableColumn\":false},{\"capJavaField\":\"Description\",\"columnComment\":\"直播描述\",\"columnId\":115,\"columnName\":\"description\",\"columnType\":\"text\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"textarea\",\"increment\":false,\"insert\":true,\"isEdit\":\"1\",\"isIncrement\":\"0\",\"isInsert\":\"1\",\"isList\":\"1\",\"isPk\":\"0\",\"isQuery\":\"1\",\"isRequired\":\"0\",\"javaField\":\"description\",\"javaType\":\"String\",\"list\":true,\"params\":{},\"pk\":false,\"query\":true,\"queryType\":\"EQ\",\"required\":false,\"sort\":3,\"superColumn\":false,\"tableId\":17,\"updateBy\":\"\",\"updateTime\":\"2025-06-06 19:40:37\",\"usableColumn\":false},{\"capJavaField\":\"Url\",\"columnComment\":\"直播链接\",\"columnId\":116,\"columnName\":\"url\",\"columnType\":\"varchar(500)\",\"createBy\":\"admin\",\"createTime\":\"2025-06-06 19:09:18\",\"dictType\":\"\",\"edit\":true,\"htmlType\":\"textarea\",\"increment\":false,\"insert\":true,\"isEdi', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 19:52:28', 33);
+INSERT INTO `sys_oper_log` VALUES (189, '代码生成', 8, 'com.ruoyi.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', '研发部门', '/tool/gen/batchGenCode', '127.0.0.1', '内网IP', '{\"tables\":\"fb_game_info,fb_game_record,fb_game_user,fb_live_stream\"}', NULL, 0, NULL, '2025-06-06 19:52:33', 221);
+INSERT INTO `sys_oper_log` VALUES (190, '菜单管理', 2, 'com.ruoyi.web.controller.system.SysMenuController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/menu', '127.0.0.1', '内网IP', '{\"children\":[],\"createTime\":\"2025-05-30 17:29:14\",\"icon\":\"guide\",\"isCache\":\"0\",\"isFrame\":\"0\",\"menuId\":4,\"menuName\":\"若依官网\",\"menuType\":\"M\",\"orderNum\":4,\"params\":{},\"parentId\":0,\"path\":\"http://ruoyi.vip\",\"perms\":\"\",\"query\":\"\",\"routeName\":\"\",\"status\":\"0\",\"updateBy\":\"admin\",\"visible\":\"1\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:16:30', 25);
+INSERT INTO `sys_oper_log` VALUES (191, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"1\",\"id\":1,\"name\":\"1\",\"params\":{},\"points\":1}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:33:19', 18);
+INSERT INTO `sys_oper_log` VALUES (192, '游戏用户管理', 3, 'com.ruoyi.system.controller.FbGameUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/gameUser/1', '127.0.0.1', '内网IP', '[1]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:33:26', 11);
+INSERT INTO `sys_oper_log` VALUES (193, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"1\",\"id\":2,\"name\":\"1\",\"params\":{},\"points\":1}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:33:41', 7);
+INSERT INTO `sys_oper_log` VALUES (194, '游戏用户管理', 3, 'com.ruoyi.system.controller.FbGameUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/gameUser/2', '127.0.0.1', '内网IP', '[2]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:33:50', 14);
+INSERT INTO `sys_oper_log` VALUES (195, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"1\",\"id\":3,\"name\":\"1\",\"params\":{},\"points\":1}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:41:58', 31);
+INSERT INTO `sys_oper_log` VALUES (196, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"2\",\"id\":4,\"name\":\"2\",\"params\":{},\"points\":2}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:42:01', 14);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -758,7 +781,7 @@ CREATE TABLE `sys_post`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`post_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '岗位信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '岗位信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_post
@@ -788,7 +811,7 @@ CREATE TABLE `sys_role`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
@@ -804,7 +827,7 @@ CREATE TABLE `sys_role_dept`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `dept_id` bigint NOT NULL COMMENT '部门ID',
   PRIMARY KEY (`role_id`, `dept_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和部门关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和部门关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role_dept
@@ -821,7 +844,7 @@ CREATE TABLE `sys_role_menu`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `menu_id` bigint NOT NULL COMMENT '菜单ID',
   PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和菜单关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和菜单关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -938,12 +961,12 @@ CREATE TABLE `sys_user`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 101 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 101 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-02 21:32:26', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', '2025-06-02 21:32:25', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-06 18:44:17', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', '2025-06-06 18:44:16', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-30 17:29:14', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', NULL, '测试员');
 INSERT INTO `sys_user` VALUES (100, NULL, 'test', 'test', '00', '', '', '0', '', '$2a$10$S6Z.3O4Du73ZzbueMRqzhuZgWRH6EXwl8/DGcMSXreY2leSb6xitK', '0', '0', '127.0.0.1', '2025-05-30 20:34:50', '2025-05-30 18:22:16', '', '2025-05-30 18:22:16', '', '2025-05-30 20:34:49', NULL);
 
@@ -955,7 +978,7 @@ CREATE TABLE `sys_user_post`  (
   `user_id` bigint NOT NULL COMMENT '用户ID',
   `post_id` bigint NOT NULL COMMENT '岗位ID',
   PRIMARY KEY (`user_id`, `post_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户与岗位关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户与岗位关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user_post
@@ -971,7 +994,7 @@ CREATE TABLE `sys_user_role`  (
   `user_id` bigint NOT NULL COMMENT '用户ID',
   `role_id` bigint NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`user_id`, `role_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户和角色关联表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户和角色关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user_role
