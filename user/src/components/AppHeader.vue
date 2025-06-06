@@ -1,56 +1,43 @@
 <template>
-  <header class="header bg-white shadow fixed top-0 left-0 w-full z-50">
+  <header class="header shadow fixed top-0 left-0 w-full z-50">
     <div class="container mx-auto flex justify-between items-center h-16 px-4">
-      <div class="logo font-bold text-xl text-[#222]">
+      <div class="logo font-bold text-xl">
         <a href="/" class="hover:opacity-80">
-          <span class="text-gray-400 text-base font-normal">Live Lobby</span>
+          <span class="logo-highlight px-3 py-1 rounded-lg font-bold text-lg">Live Lobby</span>
         </a>
       </div>
       <nav class="nav">
         <ul class="flex items-center gap-6">
           <template v-if="isLogin">
             <li>
-              <span class="user-nickname text-[#2563eb] font-semibold">{{ userNickname }}</span>
+              <span class="user-nickname text-[#e53e3e] font-semibold">{{ userNickname }}</span>
             </li>
             <li>
-              <a href="javascript:;" class="hover:text-[#2563eb]" @click="goProfile">
-                <span class="text-xs text-gray-400">个人中心</span>
+              <a href="javascript:;" class="nav-btn" @click="goProfile">
+                <span>个人中心</span>
               </a>
             </li>
             <li>
-              <a href="javascript:;" class="hover:text-[#2563eb]" @click="logout">
-                <span class="text-xs text-gray-400">登出</span>
+              <a href="javascript:;" class="nav-btn" @click="logout">
+                <span>登出</span>
               </a>
             </li>
           </template>
           <template v-else>
             <li>
-              <a href="javascript:;" class="hover:text-[#2563eb]" @click="showRegister = true">
-                <span class="text-xs text-gray-400">日志</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:;" class="hover:text-[#2563eb]" @click="showRegister = true">
-                <span class="text-xs text-gray-400">注册</span>
+              <a href="javascript:;" class="nav-btn" @click="showLogin = true">
+                <span>登录</span>
               </a>
             </li>
           </template>
         </ul>
       </nav>
     </div>
-    <LoginModal
+    <LoginRegisterModal
       v-if="showLogin"
       :show="showLogin"
       @close="showLogin = false"
       @success="handleLoginSuccess"
-      @toRegister="switchToRegister"
-    />
-    <RegisterModal
-      v-if="showRegister"
-      :show="showRegister"
-      @close="showRegister = false"
-      @success="handleRegisterSuccess"
-      @toLogin="switchToLogin"
     />
   </header>
 </template>
@@ -58,16 +45,13 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
-import LoginModal from './LoginModal.vue'
-import RegisterModal from './RegisterModal.vue'
+import LoginRegisterModal from './LoginRegisterModal.vue'
 
 const isLogin = ref(false)
 const userNickname = ref('未登录')
 const userInfo = ref({})
 
 const showLogin = ref(false)
-const showRegister = ref(false)
 
 const router = useRouter()
 
@@ -86,12 +70,8 @@ const logout = () => {
 }
 
 // 登录/注册后获取用户信息并持久化
-async function fetchAndStoreUserInfo(account) {
+async function fetchAndStoreUserInfo() {
   try {
-    // 你可以根据实际接口调整
-    // const res = await axios.get(`http://localhost:8080/app/user/info/${account}`)
-    // userInfo.value = res.data.user
-    // 这里直接用 localStorage 里的 userInfo
     const info = localStorage.getItem('userInfo')
     if (info) {
       userInfo.value = JSON.parse(info)
@@ -106,25 +86,8 @@ async function fetchAndStoreUserInfo(account) {
 }
 
 function handleLoginSuccess(payload) {
-  // 登录成功后已保存 user 到 localStorage
-  fetchAndStoreUserInfo(payload.user.account)
+  fetchAndStoreUserInfo()
   showLogin.value = false
-}
-
-function handleRegisterSuccess(payload) {
-  // 注册成功后建议自动登录
-  fetchAndStoreUserInfo(payload.account)
-  showRegister.value = false
-}
-
-function switchToRegister() {
-  showLogin.value = false
-  showRegister.value = true
-}
-
-function switchToLogin() {
-  showRegister.value = false
-  showLogin.value = true
 }
 
 // 页面加载时自动读取用户信息
@@ -143,7 +106,37 @@ watch(userNickname, (val) => {
 
 <style scoped>
 .header {
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+  background: #18181c !important;
+}
+.logo-highlight {
+  background: #e53e3e;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 2px;
+  box-shadow: 0 2px 8px 0 rgba(229,62,62,0.10);
+}
+.nav-btn {
+  display: inline-block;
+  padding: 6px 18px;
+  margin: 0 2px;
+  border-radius: 8px;
+  background: #FFFF;
+  color: #e53e3e;
+  border: 2px solid #e53e3e;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(229,62,62,0.08);
+}
+.nav-btn:hover {
+  background: #e53e3e;
+  color: #fff;
+  border-color: #e53e3e;
+}
+.user-nickname {
+  color: #e53e3e !important;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>

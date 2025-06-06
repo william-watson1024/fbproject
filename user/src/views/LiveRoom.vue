@@ -6,14 +6,14 @@
         <div class="room-content bg-white rounded-2xl shadow-xl p-0">
           <!-- 头部信息 -->
           <div class="room-header border-b px-8 pt-8 pb-4">
-            <h1 class="text-2xl font-bold text-[#222] mb-2">
+            <h1 class="text-2xl font-bold text-white-custom mb-2">
               {{ roomInfo.title || "直播间" }}
             </h1>
             <div
               class="room-info flex flex-wrap items-center gap-4 text-gray-700 text-sm"
             >
               <span
-                class="room-status live flex items-center gap-1 text-[#e53e3e] font-semibold"
+                class="room-status live flex items-center gap-1 text-red-custom font-semibold"
               >
                 <span
                   class="live-dot w-2 h-2 bg-[#e53e3e] rounded-full animate-pulse"
@@ -24,7 +24,7 @@
                 广播公司: {{ roomInfo.host || "-" }}
               </span>
               <span class="room-period"> Ky: {{ roomInfo.code || "-" }} </span>
-              <span class="room-period-status closed text-[#e53e3e]">
+              <span class="room-period-status closed text-red-custom">
                 {{ roomInfo.statusText || "关闭" }}
               </span>
             </div>
@@ -167,13 +167,19 @@ const recentResults = [
 <style scoped>
 .header {
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
-  background: #fff;
+  background: #18181c !important;
+}
+.min-h-screen, body {
+  background: #18181c !important;
+  color: #f5f5f5 !important;
 }
 .room-content {
   margin-top: 24px;
+  background: #232326 !important;
+  color: #f5f5f5 !important;
 }
 .room-header {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #333;
 }
 .room-info .live-dot {
   display: inline-block;
@@ -184,6 +190,8 @@ const recentResults = [
 .room-video .live-badge {
   top: 12px;
   left: 12px;
+  background: #e53e3e !important;
+  color: #fff !important;
 }
 .room-iframe {
   min-height: 600px;
@@ -191,23 +199,36 @@ const recentResults = [
 }
 .section-title-bar {
   width: 100%;
-  background: #2563eb;
-  color: #fff;
+  background: #e53e3e !important;
+  color: #fff !important;
   border-radius: 16px 16px 0 0;
   padding: 0.25rem 1.5rem;
   margin-bottom: 0;
   margin-top: 0;
-  box-shadow: 0 2px 8px 0 rgba(37, 99, 235, 0.08);
+  box-shadow: 0 2px 8px 0 rgba(229, 62, 62, 0.08);
   display: block;
 }
 .section-title {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #fff;
+  color: #fff !important;
   margin: 0;
 }
 .p-6 {
   padding: 1.5rem !important;
+}
+.bg-white {
+  background: #232326 !important;
+  color: #f5f5f5 !important;
+}
+.text-white-custom {
+  color: #f5f5f5 !important;
+}
+.text-gray-700, .text-gray-600, .text-gray-400, .text-base, .text-sm {
+  color: #ccc !important;
+}
+.text-red-custom {
+  color: #e53e3e !important;
 }
 @media (max-width: 900px) {
   .room-main {

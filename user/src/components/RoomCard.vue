@@ -10,7 +10,7 @@
       <h3 class="room-title font-normal text-base truncate mb-1 mt-0">{{ room.title }}</h3>
       <p class="room-streamer text-xs text-gray-600 mb-2 mt-1">主播：{{ room.host }}</p>
       <router-link :to="room.link" class="room-enter mt-auto">
-        <button class="bg-royalblue text-xs text-white px-4 py-2 rounded w-full hover:bg-royalblue/90 transition">进入房间</button>
+        <button class="bg-goodred text-xs text-white px-4 py-2 rounded w-full hover:bg-goodred/90 transition">进入房间</button>
       </router-link>
     </div>
   </div>

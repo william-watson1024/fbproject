@@ -68,34 +68,32 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+body, .min-h-screen, .bg-\[\#f6f7fb\] {
+  background: #18181c !important;
+  color: #f5f5f5 !important;
+}
 .header {
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  background: #fff;
+  background: #C32136 !important;
+  color: #f5f5f5 !important;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
 }
 .room-card {
+  background: #232326 !important;
+  color: #f5f5f5 !important;
   min-height: 370px;
 }
-.room-cover img {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
 .room-status.live {
-  top: 12px;
-  left: 12px;
-  background: #e53e3e;
-  color: #fff;
-  font-weight: bold;
+  background: #e53e3e !important;
+  color: #fff !important;
 }
 .room-title {
-  font-size: 1.15rem;
+  color: #fff !important;
 }
 .room-enter {
-  display: block;
+  background: #e53e3e !important;
+  color: #fff !important;
 }
-@media (max-width: 900px) {
-  .room-grid {
-    grid-template-columns: 1fr !important;
-  }
+.room-enter:hover {
+  background: #b91c1c !important;
 }
 </style>

@@ -10,6 +10,8 @@ export default {
         royalblue: '#4169E1',
         hoverblue: '#3151B5',
         livered: '#F44336',
+        goodred: '#C32136',
+        hoverred:'#BE002F',
       },
     },
   },

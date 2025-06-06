@@ -7,8 +7,8 @@
         :class="[
           'bet-option-btn flex flex-col items-center justify-center px-2 py-3 rounded-lg font-semibold text-base transition-all duration-200 transform border border-transparent',
           selectedAnimal === item
-            ? 'bg-royalblue text-white scale-105'
-            : 'bg-white text-royalblue hover:-translate-y-1 hover:shadow-lg'
+            ? 'bg-goodred text-white scale-105'
+            : 'bg-white text-goodred hover:-translate-y-1 hover:shadow-lg'
         ]"
         @click="selectAnimal(item)"
       >
@@ -25,8 +25,8 @@
         :class="[
           'bet-option-btn px-2 py-2 rounded-lg font-semibold text-sm transition-all duration-200 transform border border-transparent',
           selectedAmount === amt
-            ? 'bg-royalblue text-white scale-105'
-            : 'bg-white text-royalblue hover:-translate-y-1 hover:shadow-lg'
+            ? 'bg-goodred text-white scale-105'
+            : 'bg-white text-goodred hover:-translate-y-1 hover:shadow-lg'
         ]"
         @click="selectAmount(amt)"
       >
@@ -42,19 +42,19 @@
     />
     <div class="flex gap-2 mb-2">
       <button
-        class="bg-blue-600 text-white px-4 py-2 w-full rounded"
+        class="bg-goodred text-white px-4 py-2 w-full rounded"
         :disabled="betting"
         @click="handleBet"
       >{{ betting ? '下注中...' : '下注' }}</button>
       <button
-        class="bg-blue-600 text-white px-4 py-2 w-full rounded"
+        class="bg-goodred text-white px-4 py-2 w-full rounded"
         :disabled="refreshing"
         @click="refreshPoints"
       >
         {{ refreshing ? '刷新中...' : '刷新积分' }}
       </button>
     </div>
-    <div class="text-center text-blue-600 mb-2">
+    <div class="text-center text-goodred mb-2">
       当前积分：<span class="font-bold">{{ points }}</span>
     </div>
     <div v-if="betMsg" class="text-center text-red-500 mt-2">{{ betMsg }}</div>
