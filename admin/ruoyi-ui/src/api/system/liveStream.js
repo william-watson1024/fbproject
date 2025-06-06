@@ -42,3 +42,16 @@ export function delLiveStream(id) {
     method: 'delete'
   })
 }
+
+export function changeLiveStreamStatus(id, isActive) {
+  const data = {
+    id,
+    isActive
+  }
+  return request({
+    url: '/app/liveStream/changeStatus',
+    method: 'put',
+    data
+  })
+}
+

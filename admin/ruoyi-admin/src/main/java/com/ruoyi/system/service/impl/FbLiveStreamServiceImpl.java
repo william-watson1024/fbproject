@@ -90,4 +90,11 @@ public class FbLiveStreamServiceImpl implements IFbLiveStreamService
     {
         return fbLiveStreamMapper.deleteFbLiveStreamById(id);
     }
+
+    @Override
+    public int changeStatus(FbLiveStream fbLiveStream) {
+        // 只更新 status 字段
+        return fbLiveStreamMapper.updateLiveStreamStatus(fbLiveStream.getId(), fbLiveStream.getIsActive());
+    }
+
 }

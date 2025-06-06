@@ -58,12 +58,15 @@
         />
       </el-form-item>
       <el-form-item label="下注状态" prop="isActive">
-        <el-input
+        <el-select
           v-model="queryParams.isActive"
-          placeholder="请输入下注状态"
+          placeholder="请选择下注状态"
           clearable
-          @keyup.enter.native="handleQuery"
-        />
+          @change="handleQuery"
+        >
+          <el-option label="已处理" :value="1" />
+          <el-option label="未处理" :value="0" />
+        </el-select>
       </el-form-item>
       <el-form-item label="下注时间" prop="betTime">
         <el-date-picker clearable
@@ -136,7 +139,14 @@
       <el-table-column label="下注金额" align="center" prop="betNum" />
       <el-table-column label="下注名称" align="center" prop="betName" />
       <el-table-column label="投注内容" align="center" prop="betContent" />
-      <el-table-column label="下注状态" align="center" prop="isActive" />
+      <el-table-column label="下注状态" align="center" prop="isActive">
+        <template #default="{ row }">
+          <span>
+            {{ row.isActive === 1 ? '已处理' : '未处理' }}
+          </span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="下注时间" align="center" prop="betTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.betTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -198,7 +208,14 @@
           <el-input v-model="form.betContent" placeholder="请输入投注内容" />
         </el-form-item>
         <el-form-item label="下注状态" prop="isActive">
-          <el-input v-model="form.isActive" placeholder="请输入下注状态" />
+          <el-select
+            v-model="form.isActive"
+            placeholder="请选择下注状态"
+            clearable
+          >
+            <el-option label="已处理" :value="1" />
+            <el-option label="未处理" :value="0" />
+          </el-select>
         </el-form-item>
         <el-form-item label="下注时间" prop="betTime">
           <el-date-picker clearable
