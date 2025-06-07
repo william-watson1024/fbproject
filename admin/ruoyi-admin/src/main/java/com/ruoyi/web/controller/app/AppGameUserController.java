@@ -2,12 +2,16 @@ package com.ruoyi.web.controller.app;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.FbGameRecord;
 import com.ruoyi.system.domain.FbGameUser;
+import com.ruoyi.system.service.IFbGameRecordService;
 import com.ruoyi.system.service.IFbGameUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 /**
  * ==================================================
@@ -29,6 +33,8 @@ public class AppGameUserController extends BaseController {
     private StringRedisTemplate redisTemplate;
     @Value("${app.recharge-token}")
     private String rechargeToken;
+    @Autowired
+    private IFbGameRecordService fbGameRecordService;
 
     /**
      * 登录接口
@@ -128,7 +134,7 @@ public class AppGameUserController extends BaseController {
      * redis令牌用户积分充值接口
      */
     @PostMapping("/rechargeByRedisToken")
-    public AjaxResult rechargeByRedisToken(String account, Long points, String token) {
+    public AjaxResult rechargeByRedisToken(@RequestParam String account,@RequestParam Long points,@RequestParam String token) {
         // 1. 从 Redis 获取存储的 token
         String redisKey = "recharge_token:" + account;
         String realToken = redisTemplate.opsForValue().get(redisKey);
@@ -152,6 +158,58 @@ public class AppGameUserController extends BaseController {
 
         return AjaxResult.success("充值成功，当前积分为：" + user.getPoints());
     }
+    
+    /**
+     * 下注并扣除积分接口
+     */
+    @PostMapping("/deductPoints")
+    public AjaxResult deductPoints(
+            @RequestParam String account,
+            @RequestParam Long points,
+            @RequestParam Long liveStreamId,
+            @RequestParam String gameType,
+            @RequestParam Long gameRound,
+            @RequestParam String betName,
+            @RequestParam String betContent
+    ) {
+        if (points == null || points <= 0) {
+            return AjaxResult.error("下注积分必须大于0");
+        }
+
+        FbGameUser user = fbGameUserService.selectUserByAccount(account);
+        if (user == null) {
+            return AjaxResult.error("账号不存在");
+        }
+
+        if (user.getPoints() < points) {
+            return AjaxResult.error("积分不足");
+        }
+
+        // 扣除用户积分
+        user.setPoints(user.getPoints() - points);
+        int result = fbGameUserService.updateFbGameUser(user);
+        if (result <= 0) {
+            return AjaxResult.error("扣除积分失败");
+        }
+
+        // 插入下注记录
+        FbGameRecord record = new FbGameRecord();
+        record.setGameUserId(user.getId());
+        record.setGameUserAccount(user.getAccount());
+        record.setLiveStreamId(liveStreamId);
+        record.setGameType(gameType);
+        record.setGameRound(gameRound);
+        record.setBetNum(points);
+        record.setBetName(betName);
+        record.setBetContent(betContent);
+        record.setIsActive(1L); // 1表示有效下注
+        record.setBetTime(LocalDateTime.now());
+
+        fbGameRecordService.insertFbGameRecord(record);
+
+        return AjaxResult.success("下注并扣除成功", user.getPoints());
+    }
+
 
 
 }
