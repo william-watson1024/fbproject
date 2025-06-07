@@ -55,3 +55,19 @@ export function changeLiveStreamStatus(id, isActive) {
   })
 }
 
+/**
+ * 结算游戏记录
+ * @param {{liveStreamId: null, odds: null, betContent: *}} data - 请求参数
+ * @param {number|string} data.liveStreamId - 直播间 ID
+ * @param {number|string} data.odds - 赔率
+ * @param {string} data.betContent - 投注内容（即开奖结果）
+ * @param {boolean} data.nextRound - 是否开启下一轮
+ * @returns {Promise<Object>} 后端返回的响应对象
+ */
+export function settleGameRecord(data) {
+  return request({
+    url: '/system/gameRecord/settle',
+    method: 'post',
+    data: data // 使用 request body 传参
+  });
+}

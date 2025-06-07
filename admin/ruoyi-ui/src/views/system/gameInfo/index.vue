@@ -25,10 +25,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="当前局号" prop="gameRound">
+      <el-form-item label="游戏局号" prop="gameRound">
         <el-input
           v-model="queryParams.gameRound"
-          placeholder="请输入当前局号"
+          placeholder="请输入游戏局号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -144,7 +144,7 @@
       <el-table-column label="游戏名称" align="center" prop="gameName" />
       <el-table-column label="游戏主播" align="center" prop="gameHost" />
       <el-table-column label="房间号" align="center" prop="liveStreamId" />
-      <el-table-column label="当前局号" align="center" prop="gameRound" />
+      <el-table-column label="游戏局号" align="center" prop="gameRound" />
       <el-table-column label="开奖结果" align="center" prop="result" />
       <el-table-column label="游戏状态" align="center" prop="gameStatus" />
       <el-table-column label="游戏局流水号" align="center" prop="gameSerialNumber" />
@@ -203,8 +203,8 @@
         <el-form-item label="房间号" prop="liveStreamId">
           <el-input v-model="form.liveStreamId" placeholder="请输入房间号" />
         </el-form-item>
-        <el-form-item label="当前局号" prop="gameRound">
-          <el-input v-model="form.gameRound" placeholder="请输入当前局号" />
+        <el-form-item label="游戏局号" prop="gameRound">
+          <el-input v-model="form.gameRound" placeholder="请输入游戏局号" />
         </el-form-item>
         <el-form-item label="开奖结果" prop="result">
           <el-input v-model="form.result" placeholder="请输入开奖结果" />
@@ -311,7 +311,7 @@ export default {
           { required: true, message: "房间号不能为空", trigger: "blur" }
         ],
         gameRound: [
-          { required: true, message: "当前局号不能为空", trigger: "blur" }
+          { required: true, message: "游戏局号不能为空", trigger: "blur" }
         ],
         result: [
           { required: true, message: "开奖结果不能为空", trigger: "blur" }

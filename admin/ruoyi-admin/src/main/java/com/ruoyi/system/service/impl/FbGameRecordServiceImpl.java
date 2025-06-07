@@ -90,4 +90,5 @@ public class FbGameRecordServiceImpl implements IFbGameRecordService
     {
         return fbGameRecordMapper.deleteFbGameRecordById(id);
     }
+
 }

@@ -61,4 +61,6 @@ public interface FbGameInfoMapper
     public int deleteFbGameInfoByIds(Long[] ids);
 
     public List<FbGameInfo> selectFbGameInfoListAfterTime(LocalDateTime time);
+
+    FbGameInfo selectFbGameInfoByGameInfo(Long gameRound);
 }

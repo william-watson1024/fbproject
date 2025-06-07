@@ -125,6 +125,31 @@
           v-hasPermi="['system:gameRecord:export']"
         >导出</el-button>
       </el-col>
+      <!-- 新增的“设置赔率”按钮 -->
+      <el-col :span="2">
+        <el-button
+          type="info"
+          plain
+          icon="el-icon-setting"
+          size="mini"
+          @click="showOddsDialog"
+        >设置赔率</el-button>
+      </el-col>
+      <!-- 新增的“结算”按钮 -->
+      <el-col :span="2">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-check"
+          size="mini"
+          @click="handleSettlement"
+        >结算</el-button>
+      </el-col>
+
+      <!-- 新增的“开启下一局”复选框 -->
+      <el-col :span="2">
+        <el-checkbox v-model="nextRoundEnabled" size="mini">开启下一局</el-checkbox>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -231,11 +256,49 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 新增的“设置赔率”弹窗 -->
+    <el-dialog
+      title="设置直播间赔率与开奖结果"
+      :visible.sync="oddsDialogVisible"
+      width="400px"
+      @close="cancelOdds"
+    >
+      <el-form :model="tempForm" label-width="100px" size="small">
+        <el-form-item label="直播间ID">
+          <el-input
+            v-model="tempLiveStreamId"
+            placeholder="请输入直播间ID"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="赔率">
+          <el-input
+            v-model="tempOdds"
+            placeholder="请输入赔率（数字）"
+            clearable
+            type="number"
+          />
+        </el-form-item>
+        <el-form-item label="开奖结果">
+          <el-input
+            v-model="tempResult"
+            placeholder="请输入开奖结果"
+            clearable
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="confirmOdds">确 定</el-button>
+        <el-button @click="cancelOdds">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { listGameRecord, getGameRecord, delGameRecord, addGameRecord, updateGameRecord } from "@/api/system/gameRecord"
+import {settleGameRecord} from "@/api/system/liveStream";
 
 export default {
   name: "GameRecord",
@@ -279,36 +342,50 @@ export default {
       // 表单校验
       rules: {
         gameUserId: [
-          { required: true, message: "下注用户ID不能为空", trigger: "blur" }
+          {required: true, message: "下注用户ID不能为空", trigger: "blur"}
         ],
         gameUserAccount: [
-          { required: true, message: "下注用户账号不能为空", trigger: "blur" }
+          {required: true, message: "下注用户账号不能为空", trigger: "blur"}
         ],
         liveStreamId: [
-          { required: true, message: "直播房间ID不能为空", trigger: "blur" }
+          {required: true, message: "直播房间ID不能为空", trigger: "blur"}
         ],
         gameType: [
-          { required: true, message: "游戏类型不能为空", trigger: "blur" }
+          {required: true, message: "游戏类型不能为空", trigger: "blur"}
         ],
         gameRound: [
-          { required: true, message: "游戏局号不能为空", trigger: "blur" }
+          {required: true, message: "游戏局号不能为空", trigger: "blur"}
         ],
         betNum: [
-          { required: true, message: "下注金额不能为空", trigger: "blur" }
+          {required: true, message: "下注金额不能为空", trigger: "blur"}
         ],
         betName: [
-          { required: true, message: "下注名称不能为空", trigger: "blur" }
+          {required: true, message: "下注名称不能为空", trigger: "blur"}
         ],
         betContent: [
-          { required: true, message: "投注内容不能为空", trigger: "blur" }
+          {required: true, message: "投注内容不能为空", trigger: "blur"}
         ],
         isActive: [
-          { required: true, message: "下注状态不能为空", trigger: "blur" }
+          {required: true, message: "下注状态不能为空", trigger: "blur"}
         ],
         betTime: [
-          { required: true, message: "下注时间不能为空", trigger: "blur" }
+          {required: true, message: "下注时间不能为空", trigger: "blur"}
         ]
-      }
+      },
+      // =================== 新增“设置赔率”相关数据 ===================
+      // 是否显示“设置赔率”弹窗
+      oddsDialogVisible: false,
+      // 临时编辑变量：打开弹窗时用于绑定输入
+      tempLiveStreamId: null,
+      tempOdds: null,
+      tempResult: null,
+      // 持久化存储：只有点击“确定”后才会覆盖
+      persistLiveStreamId: null,
+      persistOdds: null,
+      persistResult: null,
+      // ====== 新增的“结算”与“下一局”相关数据 ======
+      nextRoundEnabled: false // 是否开启下一局
+      // ==============================================================
     }
   },
   created() {
@@ -359,7 +436,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -401,19 +478,89 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids
-      this.$modal.confirm('是否确认删除游戏记录管理编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除游戏记录管理编号为"' + ids + '"的数据项？').then(function () {
         return delGameRecord(ids)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess("删除成功")
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
       this.download('system/gameRecord/export', {
         ...this.queryParams
       }, `gameRecord_${new Date().getTime()}.xlsx`)
+    },
+    // =================== 新增“设置赔率”相关方法 ===================
+    /** 点击“设置赔率”按钮，打开弹窗前先把临时变量设为上一次已保存的数据 */
+    showOddsDialog() {
+      this.tempLiveStreamId = this.persistLiveStreamId;
+      this.tempOdds = this.persistOdds;
+      this.tempResult = this.persistResult;
+      this.oddsDialogVisible = true;
+    },
+    /** 点击弹窗“确定” */
+    confirmOdds() {
+      // 简单校验：比如“直播间ID”与“赔率”不能为空
+      if (
+        this.tempLiveStreamId === null ||
+        this.tempLiveStreamId === "" ||
+        this.tempOdds === null ||
+        this.tempOdds === ""
+      ) {
+        this.$message.warning("请先填写“直播间ID”和“赔率”！");
+        return;
+      }
+      // 将临时变量赋值给持久变量
+      this.persistLiveStreamId = this.tempLiveStreamId;
+      this.persistOdds = this.tempOdds;
+      this.persistResult = this.tempResult;
+      this.oddsDialogVisible = false;
+      this.$message.success("已保存赔率设置");
+    },
+    /** 点击弹窗“取消”或右上角叉号 */
+    cancelOdds() {
+      // 不做任何持久化赋值，直接关闭弹窗
+      this.oddsDialogVisible = false;
+    },
+    handleSettlement() {
+      // 1. 校验
+      if (
+        this.persistLiveStreamId === null ||
+        this.persistLiveStreamId === "" ||
+        this.persistOdds === null ||
+        this.persistOdds === "" ||
+        !this.persistResult
+      ) {
+        this.$message.warning("请先在“设置赔率”中确认“直播间ID”、“赔率”以及“开奖结果”");
+        return;
+      }
+
+      // 2. 构造请求参数
+      const payload = {
+        liveStreamId: this.persistLiveStreamId,
+        odds: this.persistOdds,
+        betContent: this.persistResult,
+        nextRoundEnabled: this.nextRoundEnabled // 是否开启下一局
+      };
+
+      // 3. 调用结算接口
+      this.settleGameRecord(payload)
+        .then(() => {
+          this.$message.success("结算成功！");
+          if(this.nextRoundEnabled) {
+
+            this.$message.success("已开启下一局");
+          }
+          this.getList();
+        })
+        .catch(() => {
+          this.$message.error("结算失败，请重试！");
+        });
     }
+
+
   }
 }
 </script>
