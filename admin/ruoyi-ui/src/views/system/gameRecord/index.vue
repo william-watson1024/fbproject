@@ -297,8 +297,8 @@
 </template>
 
 <script>
-import { listGameRecord, getGameRecord, delGameRecord, addGameRecord, updateGameRecord } from "@/api/system/gameRecord"
-import {settleGameRecord} from "@/api/system/liveStream";
+import { listGameRecord, getGameRecord, delGameRecord, addGameRecord, updateGameRecord ,settleGameRecord} from "@/api/system/gameRecord"
+
 
 export default {
   name: "GameRecord",
@@ -336,6 +336,11 @@ export default {
         betContent: null,
         isActive: null,
         betTime: null
+      },
+      tempForm: {
+        tempLiveStreamId: '',
+        tempOdds: '',
+        tempResult: ''
       },
       // 表单参数
       form: {},
@@ -475,6 +480,9 @@ export default {
         }
       })
     },
+    settleGameRecord(payload) {
+      return settleGameRecord(payload);
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids
@@ -525,6 +533,7 @@ export default {
       this.oddsDialogVisible = false;
     },
     handleSettlement() {
+      console.log("开始结算");
       // 1. 校验
       if (
         this.persistLiveStreamId === null ||

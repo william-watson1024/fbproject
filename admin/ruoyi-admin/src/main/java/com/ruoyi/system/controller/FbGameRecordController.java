@@ -114,11 +114,11 @@ public class FbGameRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gameRecord:settle')")
     @Log(title = "结算", businessType = BusinessType.UPDATE)
     @PostMapping("/settle")
-    public AjaxResult settle(
-            @RequestParam("liveStreamId") Long liveStreamId,
-            @RequestParam("odds") Long odds,
-            @RequestParam("nextRoundEnabled") Boolean nextRoundEnabled,
-            @RequestParam("betContent") String betContent){
+    public AjaxResult settle(@RequestBody com.yourcompany.project.dto.SettleGameDTO dto){
+        Long liveStreamId = dto.getLiveStreamId();
+        Long odds = dto.getOdds();
+        String betContent = dto.getBetContent();
+        Boolean nextRoundEnabled = dto.getNextRoundEnabled();
         if (liveStreamId == null || odds == null || !StringUtils.hasText(betContent)) {
             return AjaxResult.error("直播间ID、赔率和投注内容不能为空");
         }
@@ -151,6 +151,7 @@ public class FbGameRecordController extends BaseController
         if (gameRound != null) {
             FbGameInfo existingGameInfo = fbGameInfoService.selectFbGameInfoByGameInfo(gameRound);
             existingGameInfo.setResult(betContent);
+            existingGameInfo.setCloseTime(java.time.LocalDateTime.now());
             fbGameInfoService.updateFbGameInfo(existingGameInfo);
             if(nextRoundEnabled){
                 FbGameInfo newGameInfo = new FbGameInfo();
