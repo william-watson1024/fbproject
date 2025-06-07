@@ -109,11 +109,17 @@ onMounted(() => {
 
 <style scoped>
 .header {
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
-  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  background: #18181c !important;
+}
+.min-h-screen, body {
+  background: #18181c !important;
+  color: #f5f5f5 !important;
 }
 .user-sidebar {
   min-width: 220px;
+  background: #232326 !important;
+  color: #f5f5f5 !important;
 }
 .user-avatar img {
   width: 56px;
@@ -125,29 +131,31 @@ onMounted(() => {
   padding: 8px 0;
   font-size: 1rem;
   transition: background 0.2s;
+  color: #f5f5f5 !important;
 }
 .menu-item.active,
-.menu-item.text-#2563eb,
-.menu-item.text-#2563eb {
-  background: #f3f6fa;
-  color: #2563eb;
+.menu-item.text-\#2563eb {
+  background: #2d2d2d !important;
+  color: #e53e3e !important;
 }
 .bet-header {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #333;
   padding-bottom: 1rem;
   margin-bottom: 1.5rem;
 }
-.bet-stat-label {
-  font-weight: 500;
+.bet-history {
+  background: #232326 !important;
+  color: #f5f5f5 !important;
 }
 .bet-stat-value {
-  color: #2563eb;
+  color: #e53e3e !important;
 }
 .no-data-icon {
   font-size: 2.5rem;
 }
 .no-data-text {
   font-size: 1.1rem;
+  color: #888 !important;
 }
 @media (max-width: 900px) {
   .user-container {
