@@ -46,6 +46,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFbGameInfoVo"/>
         WHERE start_time >= #{startTime}
     </select>
+    <select id="selectFbGameInfoByGameInfo" resultType="com.ruoyi.system.domain.FbGameInfo">
+        <include refid="selectFbGameInfoVo"/>
+        where game_round = #{gameRound}
+    </select>
 
     <insert id="insertFbGameInfo" parameterType="FbGameInfo" useGeneratedKeys="true" keyProperty="id">
         insert into fb_game_info

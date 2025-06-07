@@ -58,4 +58,5 @@ public interface IFbGameRecordService
      * @return 结果
      */
     public int deleteFbGameRecordById(Long id);
+
 }

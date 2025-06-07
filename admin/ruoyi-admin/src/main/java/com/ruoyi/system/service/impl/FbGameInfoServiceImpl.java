@@ -96,4 +96,9 @@ public class FbGameInfoServiceImpl implements IFbGameInfoService
     public List<FbGameInfo> selectFbGameInfoListAfterTime(LocalDateTime time) {
         return fbGameInfoMapper.selectFbGameInfoListAfterTime(time);
     }
+
+    @Override
+    public FbGameInfo selectFbGameInfoByGameInfo(Long gameRound) {
+        return fbGameInfoMapper.selectFbGameInfoByGameInfo(gameRound);
+    }
 }
