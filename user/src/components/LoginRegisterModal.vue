@@ -170,6 +170,6 @@ input:focus {
   box-shadow: 0 0 0 2px #e53e3e33;
 }
 label {
-  color: #f5f5f5 !important;
+  color: #232326 !important;
 }
 </style>

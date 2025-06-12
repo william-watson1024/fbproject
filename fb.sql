@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本机
+ Source Server         : localhost_3306_for
  Source Server Type    : MySQL
- Source Server Version : 80300 (8.3.0)
+ Source Server Version : 80040 (8.0.40)
  Source Host           : localhost:3306
  Source Schema         : fb
 
  Target Server Type    : MySQL
- Target Server Version : 80300 (8.3.0)
+ Target Server Version : 80040 (8.0.40)
  File Encoding         : 65001
 
- Date: 06/06/2025 18:44:36
+ Date: 12/06/2025 21:02:14
 */
 
 SET NAMES utf8mb4;
@@ -34,11 +34,13 @@ CREATE TABLE `fb_game_info`  (
   `close_time` datetime NULL DEFAULT NULL COMMENT '实际封盘时间',
   `end_time` datetime NULL DEFAULT NULL COMMENT '结算时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of fb_game_info
 -- ----------------------------
+INSERT INTO `fb_game_info` VALUES (2, 'testgame', 'testhost', 1, 2, '鱼', '封盘', '00012', '2025-06-12 20:07:21', '2025-06-12 20:42:58', '2025-06-12 20:15:35');
+INSERT INTO `fb_game_info` VALUES (3, 'etete', 'testhost', 1, 3, '鱼', '封盘', '00013', '2025-06-12 20:20:42', '2025-06-12 20:20:43', '2025-06-12 20:20:44');
 
 -- ----------------------------
 -- Table structure for fb_game_record
@@ -57,11 +59,21 @@ CREATE TABLE `fb_game_record`  (
   `is_active` int NOT NULL DEFAULT 0 COMMENT '下注状态',
   `bet_time` datetime NOT NULL COMMENT '下注时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of fb_game_record
 -- ----------------------------
+INSERT INTO `fb_game_record` VALUES (1, 6, 'test1123', 1, '1', 1, 10, '鹿', '鹿', 0, '2025-06-12 15:51:50');
+INSERT INTO `fb_game_record` VALUES (2, 6, 'test1123', 1, '1', 1, 10, '鱼', '鱼', 0, '2025-06-12 15:58:07');
+INSERT INTO `fb_game_record` VALUES (3, 1, '1', 1, '1', 1, 1, '1', '1', 0, '2025-06-12 15:59:50');
+INSERT INTO `fb_game_record` VALUES (4, 1, '1', 1, '1', 1, 1, '1', '鹿', 0, '2025-06-12 16:01:06');
+INSERT INTO `fb_game_record` VALUES (5, 6, 'test1123', 1, '1', 1, 10, '鹿', '鹿', 0, '2025-06-12 20:03:21');
+INSERT INTO `fb_game_record` VALUES (6, 6, 'test1123', 1, '1', 1, 100, '鱼', '鱼', 0, '2025-06-12 20:04:27');
+INSERT INTO `fb_game_record` VALUES (7, 6, 'test1123', 1, '1', 1, 30, '鸡', '鸡', 0, '2025-06-12 20:04:54');
+INSERT INTO `fb_game_record` VALUES (8, 6, 'test1123', 1, '1', 2, 10, '鹿', '鹿', 0, '2025-06-12 20:14:40');
+INSERT INTO `fb_game_record` VALUES (9, 6, 'test1123', 1, '1', 2, 10, '葫芦', '葫芦', 0, '2025-06-12 20:33:30');
+INSERT INTO `fb_game_record` VALUES (10, 6, 'test1123', 1, '1', 2, 10, '葫芦', '葫芦', 0, '2025-06-12 20:33:59');
 
 -- ----------------------------
 -- Table structure for fb_game_user
@@ -74,13 +86,15 @@ CREATE TABLE `fb_game_user`  (
   `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '用户名',
   `points` int NULL DEFAULT 0 COMMENT '用户积分',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of fb_game_user
 -- ----------------------------
-INSERT INTO `fb_game_user` VALUES (3, '1', '1', '1', 1);
+INSERT INTO `fb_game_user` VALUES (3, '1', '1', '1', 21);
 INSERT INTO `fb_game_user` VALUES (4, '2', '2', '2', 2);
+INSERT INTO `fb_game_user` VALUES (5, 'test11', 'test11', 'test', 0);
+INSERT INTO `fb_game_user` VALUES (6, 'test1123', 'test1123', 'test1123', 9980);
 
 -- ----------------------------
 -- Table structure for fb_live_stream
@@ -96,11 +110,12 @@ CREATE TABLE `fb_live_stream`  (
   `game_host` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT '游戏主播名称',
   `game_start_time` datetime NULL DEFAULT NULL COMMENT '游戏开始时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of fb_live_stream
 -- ----------------------------
+INSERT INTO `fb_live_stream` VALUES (1, 'test', '1', 'https://www.321zb.co/live/1788', 1, '1', 'testhost', '2025-06-11 14:27:16');
 
 -- ----------------------------
 -- Table structure for gen_table
@@ -129,7 +144,7 @@ CREATE TABLE `gen_table`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of gen_table
@@ -167,7 +182,7 @@ CREATE TABLE `gen_table_column`  (
   `update_by` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`column_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 121 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 121 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '代码生成业务表字段' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of gen_table_column
@@ -224,7 +239,7 @@ CREATE TABLE `sys_config`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`config_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '参数配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '参数配置表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_config
@@ -258,7 +273,7 @@ CREATE TABLE `sys_dept`  (
   `update_by` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`dept_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 200 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '部门表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 200 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dept
@@ -294,7 +309,7 @@ CREATE TABLE `sys_dict_data`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典数据表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典数据表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dict_data
@@ -345,7 +360,7 @@ CREATE TABLE `sys_dict_type`  (
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`dict_id`) USING BTREE,
   UNIQUE INDEX `dict_type`(`dict_type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '字典类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_dict_type
@@ -380,7 +395,7 @@ CREATE TABLE `sys_job`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '备注信息',
   PRIMARY KEY (`job_id`, `job_name`, `job_group`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_job
@@ -403,7 +418,7 @@ CREATE TABLE `sys_job_log`  (
   `exception_info` varchar(2000) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '异常信息',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '定时任务调度日志表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_job_log
@@ -426,7 +441,7 @@ CREATE TABLE `sys_logininfor`  (
   PRIMARY KEY (`info_id`) USING BTREE,
   INDEX `idx_sys_logininfor_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_logininfor_lt`(`login_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 138 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 140 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '系统访问记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -469,6 +484,8 @@ INSERT INTO `sys_logininfor` VALUES (134, 'admin', '127.0.0.1', '内网IP', 'Chr
 INSERT INTO `sys_logininfor` VALUES (135, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 18:31:44');
 INSERT INTO `sys_logininfor` VALUES (136, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '退出成功', '2025-06-06 18:44:12');
 INSERT INTO `sys_logininfor` VALUES (137, 'admin', '127.0.0.1', '内网IP', 'Chrome 13', 'Windows 10', '0', '登录成功', '2025-06-06 18:44:16');
+INSERT INTO `sys_logininfor` VALUES (138, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-12 15:23:19');
+INSERT INTO `sys_logininfor` VALUES (139, 'admin', '127.0.0.1', '内网IP', 'Chrome 12', 'Windows 10', '0', '登录成功', '2025-06-12 20:00:50');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -496,7 +513,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2089 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2089 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '菜单权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -628,7 +645,7 @@ CREATE TABLE `sys_notice`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`notice_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '通知公告表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '通知公告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_notice
@@ -662,7 +679,7 @@ CREATE TABLE `sys_oper_log`  (
   INDEX `idx_sys_oper_log_bt`(`business_type` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_s`(`status` ASC) USING BTREE,
   INDEX `idx_sys_oper_log_ot`(`oper_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 197 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 219 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '操作日志记录' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_oper_log
@@ -764,6 +781,28 @@ INSERT INTO `sys_oper_log` VALUES (193, '游戏用户管理', 1, 'com.ruoyi.syst
 INSERT INTO `sys_oper_log` VALUES (194, '游戏用户管理', 3, 'com.ruoyi.system.controller.FbGameUserController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/gameUser/2', '127.0.0.1', '内网IP', '[2]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:33:50', 14);
 INSERT INTO `sys_oper_log` VALUES (195, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"1\",\"id\":3,\"name\":\"1\",\"params\":{},\"points\":1}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:41:58', 31);
 INSERT INTO `sys_oper_log` VALUES (196, '游戏用户管理', 1, 'com.ruoyi.system.controller.FbGameUserController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameUser', '127.0.0.1', '内网IP', '{\"account\":\"2\",\"id\":4,\"name\":\"2\",\"params\":{},\"points\":2}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-06 18:42:01', 14);
+INSERT INTO `sys_oper_log` VALUES (197, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 15:58:40', 26);
+INSERT INTO `sys_oper_log` VALUES (198, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 15:58:43', 1);
+INSERT INTO `sys_oper_log` VALUES (199, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 15:58:47', 2);
+INSERT INTO `sys_oper_log` VALUES (200, '游戏记录管理', 1, 'com.ruoyi.system.controller.FbGameRecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord', '127.0.0.1', '内网IP', '{\"betContent\":\"1\",\"betName\":\"1\",\"betNum\":1,\"betTime\":\"2025-06-12 15:59:50\",\"gameRound\":1,\"gameType\":\"1\",\"gameUserAccount\":\"1\",\"gameUserId\":1,\"id\":3,\"isActive\":1,\"liveStreamId\":1,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 15:59:51', 7);
+INSERT INTO `sys_oper_log` VALUES (201, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 16:00:02', 8);
+INSERT INTO `sys_oper_log` VALUES (202, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 16:00:05', 1);
+INSERT INTO `sys_oper_log` VALUES (203, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 16:00:17', 2);
+INSERT INTO `sys_oper_log` VALUES (204, '游戏记录管理', 1, 'com.ruoyi.system.controller.FbGameRecordController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"betName\":\"1\",\"betNum\":1,\"betTime\":\"2025-06-12 16:01:06\",\"gameRound\":1,\"gameType\":\"1\",\"gameUserAccount\":\"1\",\"gameUserId\":1,\"id\":4,\"isActive\":1,\"liveStreamId\":1,\"params\":{}}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 16:01:07', 3);
+INSERT INTO `sys_oper_log` VALUES (205, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 16:01:13', 9);
+INSERT INTO `sys_oper_log` VALUES (206, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:03:51', 42);
+INSERT INTO `sys_oper_log` VALUES (207, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":3}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:04:44', 9);
+INSERT INTO `sys_oper_log` VALUES (208, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鸡\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":3}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:05:13', 14);
+INSERT INTO `sys_oper_log` VALUES (209, '游戏信息管理', 3, 'com.ruoyi.system.controller.FbGameInfoController.remove()', 'DELETE', 1, 'admin', '研发部门', '/system/gameInfo/1', '127.0.0.1', '内网IP', '[1]', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:06:17', 5);
+INSERT INTO `sys_oper_log` VALUES (210, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-12 20:12:25\",\"endTime\":\"2025-06-12 20:15:35\",\"gameHost\":\"testhost\",\"gameName\":\"testgame\",\"gameRound\":2,\"gameSerialNumber\":\"00012\",\"gameStatus\":\"投注中\",\"id\":2,\"liveStreamId\":1,\"params\":{},\"result\":\"鸡\",\"startTime\":\"2025-06-12 20:07:21\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:07:43', 18);
+INSERT INTO `sys_oper_log` VALUES (211, '游戏信息管理', 2, 'com.ruoyi.system.controller.FbGameInfoController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-12 20:12:25\",\"endTime\":\"2025-06-12 20:15:35\",\"gameHost\":\"testhost\",\"gameName\":\"testgame\",\"gameRound\":2,\"gameSerialNumber\":\"00012\",\"gameStatus\":\"封盘\",\"id\":2,\"liveStreamId\":1,\"params\":{},\"result\":\"鸡\",\"startTime\":\"2025-06-12 20:07:21\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:12:43', 5);
+INSERT INTO `sys_oper_log` VALUES (212, '游戏信息管理', 2, 'com.ruoyi.system.controller.FbGameInfoController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-12 20:13:07\",\"endTime\":\"2025-06-12 20:15:35\",\"gameHost\":\"testhost\",\"gameName\":\"testgame\",\"gameRound\":2,\"gameSerialNumber\":\"00012\",\"gameStatus\":\"封盘\",\"id\":2,\"liveStreamId\":1,\"params\":{},\"result\":\"鸡\",\"startTime\":\"2025-06-12 20:07:21\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:13:08', 5);
+INSERT INTO `sys_oper_log` VALUES (213, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鹿\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:15:06', 8);
+INSERT INTO `sys_oper_log` VALUES (214, '游戏信息管理', 1, 'com.ruoyi.system.controller.FbGameInfoController.add()', 'POST', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-12 20:20:43\",\"endTime\":\"2025-06-12 20:20:44\",\"gameHost\":\"testhost\",\"gameName\":\"etete\",\"gameRound\":3,\"gameSerialNumber\":\"00013\",\"gameStatus\":\"投注中\",\"id\":3,\"liveStreamId\":1,\"params\":{},\"result\":\"鱼\",\"startTime\":\"2025-06-12 20:20:42\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:20:45', 3);
+INSERT INTO `sys_oper_log` VALUES (215, '游戏信息管理', 2, 'com.ruoyi.system.controller.FbGameInfoController.edit()', 'PUT', 1, 'admin', '研发部门', '/system/gameInfo', '127.0.0.1', '内网IP', '{\"closeTime\":\"2025-06-12 20:20:43\",\"endTime\":\"2025-06-12 20:20:44\",\"gameHost\":\"testhost\",\"gameName\":\"etete\",\"gameRound\":3,\"gameSerialNumber\":\"00013\",\"gameStatus\":\"封盘\",\"id\":3,\"liveStreamId\":1,\"params\":{},\"result\":\"鱼\",\"startTime\":\"2025-06-12 20:20:42\"}', '{\"msg\":\"操作成功\",\"code\":200}', 0, NULL, '2025-06-12 20:33:42', 3);
+INSERT INTO `sys_oper_log` VALUES (216, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鱼\",\"liveStreamId\":1,\"nextRoundEnabled\":false,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:42:58', 11);
+INSERT INTO `sys_oper_log` VALUES (217, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"鱼\",\"liveStreamId\":1,\"nextRoundEnabled\":true,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:42:59', 2);
+INSERT INTO `sys_oper_log` VALUES (218, '结算', 2, 'com.ruoyi.system.controller.FbGameRecordController.settle()', 'POST', 1, 'admin', '研发部门', '/system/gameRecord/settle', '127.0.0.1', '内网IP', '{\"betContent\":\"12\",\"liveStreamId\":1,\"nextRoundEnabled\":true,\"odds\":2}', '{\"msg\":\"处理完成\",\"code\":200}', 0, NULL, '2025-06-12 20:43:21', 2);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -781,7 +820,7 @@ CREATE TABLE `sys_post`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`post_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '岗位信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '岗位信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_post
@@ -811,7 +850,7 @@ CREATE TABLE `sys_role`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -827,7 +866,7 @@ CREATE TABLE `sys_role_dept`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `dept_id` bigint NOT NULL COMMENT '部门ID',
   PRIMARY KEY (`role_id`, `dept_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和部门关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和部门关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_dept
@@ -844,7 +883,7 @@ CREATE TABLE `sys_role_menu`  (
   `role_id` bigint NOT NULL COMMENT '角色ID',
   `menu_id` bigint NOT NULL COMMENT '菜单ID',
   PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和菜单关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '角色和菜单关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -961,12 +1000,12 @@ CREATE TABLE `sys_user`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 101 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 101 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-06 18:44:17', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', '2025-06-06 18:44:16', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-06-12 20:00:50', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', '2025-06-12 20:00:50', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2025-05-30 17:29:14', '2025-05-30 17:29:14', 'admin', '2025-05-30 17:29:14', '', NULL, '测试员');
 INSERT INTO `sys_user` VALUES (100, NULL, 'test', 'test', '00', '', '', '0', '', '$2a$10$S6Z.3O4Du73ZzbueMRqzhuZgWRH6EXwl8/DGcMSXreY2leSb6xitK', '0', '0', '127.0.0.1', '2025-05-30 20:34:50', '2025-05-30 18:22:16', '', '2025-05-30 18:22:16', '', '2025-05-30 20:34:49', NULL);
 
@@ -978,7 +1017,7 @@ CREATE TABLE `sys_user_post`  (
   `user_id` bigint NOT NULL COMMENT '用户ID',
   `post_id` bigint NOT NULL COMMENT '岗位ID',
   PRIMARY KEY (`user_id`, `post_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户与岗位关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户与岗位关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_post
@@ -994,7 +1033,7 @@ CREATE TABLE `sys_user_role`  (
   `user_id` bigint NOT NULL COMMENT '用户ID',
   `role_id` bigint NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`user_id`, `role_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户和角色关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = '用户和角色关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role
