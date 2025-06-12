@@ -1,4 +1,4 @@
-package com.yourcompany.project.dto;
+package com.ruoyi.system.Do;
 
 /**
  * 用于接收结算请求的 DTO

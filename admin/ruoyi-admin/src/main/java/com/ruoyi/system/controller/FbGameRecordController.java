@@ -114,7 +114,7 @@ public class FbGameRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gameRecord:settle')")
     @Log(title = "结算", businessType = BusinessType.UPDATE)
     @PostMapping("/settle")
-    public AjaxResult settle(@RequestBody com.yourcompany.project.dto.SettleGameDTO dto){
+    public AjaxResult settle(@RequestBody com.ruoyi.system.Do.SettleGameDTO dto){
         Long liveStreamId = dto.getLiveStreamId();
         Long odds = dto.getOdds();
         String betContent = dto.getBetContent();

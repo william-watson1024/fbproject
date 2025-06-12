@@ -64,8 +64,8 @@
           clearable
           @change="handleQuery"
         >
-          <el-option label="已处理" :value="1" />
-          <el-option label="未处理" :value="0" />
+          <el-option label="已处理" :value="0" />
+          <el-option label="未处理" :value="1" />
         </el-select>
       </el-form-item>
       <el-form-item label="下注时间" prop="betTime">
@@ -167,7 +167,7 @@
       <el-table-column label="下注状态" align="center" prop="isActive">
         <template #default="{ row }">
           <span>
-            {{ row.isActive === 1 ? '已处理' : '未处理' }}
+            {{ row.isActive === 0 ? '已处理' : '未处理' }}
           </span>
         </template>
       </el-table-column>
@@ -238,8 +238,8 @@
             placeholder="请选择下注状态"
             clearable
           >
-            <el-option label="已处理" :value="1" />
-            <el-option label="未处理" :value="0" />
+            <el-option label="已处理" :value="0" />
+            <el-option label="未处理" :value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="下注时间" prop="betTime">
