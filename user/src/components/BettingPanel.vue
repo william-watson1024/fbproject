@@ -43,7 +43,7 @@
     <div class="flex gap-2 mb-2">
       <button
         class="bg-goodred text-white px-4 py-2 w-full rounded"
-        :disabled="betting"
+        :disabled="betting || !props.canBet"
         @click="handleBet"
       >{{ betting ? '下注中...' : '下注' }}</button>
       <button
@@ -57,6 +57,7 @@
     <div class="text-center text-goodred mb-2">
       当前积分：<span class="font-bold">{{ points }}</span>
     </div>
+    <div v-if="!props.canBet && props.betDisabledReason" class="text-center text-red-500 mt-2">{{ props.betDisabledReason }}</div>
     <div v-if="betMsg" class="text-center text-red-500 mt-2">{{ betMsg }}</div>
   </div>
 </template>
@@ -86,7 +87,9 @@ const props = defineProps({
   amount: String,
   liveStreamId: [String, Number],
   gameType: String,
-  gameRound: [String, Number]
+  gameRound: [String, Number],
+  canBet: Boolean,
+  betDisabledReason: String
 })
 const selectedAnimal = ref('')
 const selectedAmount = ref('')

@@ -90,6 +90,8 @@
                     :liveStreamId="roomInfo.id"
                     :gameType="roomInfo.gameType || ''"
                     :gameRound="roomGameInfos.length > 0 ? roomGameInfos[0].gameRound : ''"
+                    :canBet="canBet"
+                    :betDisabledReason="betDisabledReason"
                   />
                 </div>
               </div>
@@ -159,8 +161,8 @@
                         <td class="py-2 px-2">{{ bet.betContent || '-' }}</td>
                         <td class="py-2 px-2">{{ bet.betNum || '-' }}</td>
                         <td class="py-2 px-2">
-                          <span v-if="bet.isActive === 1" class="text-green-400">已结算</span>
-                          <span v-else class="text-yellow-400">未结算</span>
+                          <span v-if="bet.isActive === 1" class="text-yellow-400">未结算</span>
+                          <span v-else class="text-green-400">已结算</span>
                         </td>
                       </tr>
                     </tbody>
@@ -301,19 +303,32 @@ const recentResults = [
   { time: "00:17:43", code: "20250530115", result: "鹿，葫芦，螃蟹" },
 ];
 
-// 取当前进行中的游戏局（优先投注中、封盘、开奖中）
+// 取当前游戏局：优先投注中，否则取最新一条（即使是封盘也显示最新一条）
 const currentGame = computed(() => {
   if (!roomGameInfos.value.length) return null
-  // 优先投注中，其次封盘、开奖中、结算中
-  const statusOrder = ['投注中', '封盘', '开奖中', '结算中']
-  for (const status of statusOrder) {
-    const found = roomGameInfos.value.find(g => g.gameStatus === status)
-    if (found) return found
-  }
-  return roomGameInfos.value[0]
+  // 优先投注中
+  const bettingGame = roomGameInfos.value.find(g => g.gameStatus === '投注中')
+  if (bettingGame) return bettingGame
+  // 否则取最新一条（gameRound最大）
+  const sorted = [...roomGameInfos.value].sort((a, b) => {
+    if (a.gameRound > b.gameRound) return -1
+    if (a.gameRound < b.gameRound) return 1
+    return 0
+  })
+  return sorted[0]
 })
 
-// 倒计时逻辑
+// 下注功能可用性判断：只有投注中才可下注，封盘/开奖/结算都不可下注
+const canBet = computed(() => {
+  return currentGame.value && currentGame.value.gameStatus === '投注中'
+})
+const betDisabledReason = computed(() => {
+  if (!currentGame.value) return '无进行中游戏，无法下注'
+  if (currentGame.value.gameStatus !== '投注中') return '当前不可下注（' + currentGame.value.gameStatus + '）'
+  return ''
+})
+
+// 倒计时逻辑：只显示投注中时距离封盘的倒计时，否则显示已封盘
 const countdown = ref('')
 let timer = null
 function updateCountdown() {
@@ -321,13 +336,8 @@ function updateCountdown() {
     countdown.value = ''
     return
   }
-  let endTime = null
   if (currentGame.value.gameStatus === '投注中' && currentGame.value.closeTime) {
-    endTime = new Date(currentGame.value.closeTime)
-  } else if (currentGame.value.gameStatus === '封盘' && currentGame.value.endTime) {
-    endTime = new Date(currentGame.value.endTime)
-  }
-  if (endTime) {
+    const endTime = new Date(currentGame.value.closeTime)
     const now = new Date()
     const diff = Math.max(0, Math.floor((endTime - now) / 1000))
     if (diff > 0) {
@@ -335,10 +345,10 @@ function updateCountdown() {
       const sec = diff % 60
       countdown.value = `${min > 0 ? min + '分' : ''}${sec}秒`
     } else {
-      countdown.value = '已截止'
+      countdown.value = '已封盘'
     }
   } else {
-    countdown.value = ''
+    countdown.value = '已封盘'
   }
 }
 
