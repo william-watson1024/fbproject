@@ -146,10 +146,10 @@
         >结算</el-button>
       </el-col>
 
-      <!-- 新增的“开启下一局”复选框 -->
+      <!-- 新增的“开启下一局”复选框
       <el-col :span="2">
         <el-checkbox v-model="nextRoundEnabled" size="mini">开启下一局</el-checkbox>
-      </el-col>
+      </el-col> -->
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
