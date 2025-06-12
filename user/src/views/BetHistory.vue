@@ -26,18 +26,14 @@
               </div>
             </div>
             <nav class="user-menu flex flex-col gap-2 w-full">
-              <a
-                href="/user/profile"
-                class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2"
-                >用户信息</a
-              >
-              <a
-                href="/user/bet"
-                class="menu-item text-[#2563eb] font-semibold rounded px-3 py-2 bg-[#f3f6fa]"
-                >投注历史</a
-              >
-              <!-- <a href="/user/recharge" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">存款</a>
-              <a href="/user/withdraw" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">提款</a> -->
+              <router-link
+                to="/user/profile"
+                class="menu-item hover:bg-[#801515] rounded px-3 py-2"
+                >用户信息</router-link>
+              <router-link
+                to="/user/bet"
+                class="menu-item text-[#2563eb] font-semibold rounded px-3 py-2 bg-[#801515]"
+                >投注历史</router-link>
             </nav>
           </aside>
           <!-- 主体内容 -->
@@ -45,19 +41,42 @@
             <div class="bet-history bg-white rounded-xl shadow p-8">
               <div class="bet-header flex items-center gap-4 mb-6">
                 <h2 class="text-xl font-bold">投注历史</h2>
-                <div class="bet-stats flex gap-4">
-                  <div class="bet-stat-item flex flex-col items-center">
-                    <span class="bet-stat-value text-lg font-bold">0</span>
-                  </div>
-                </div>
               </div>
-              <div class="bet-content">
-                <div
-                  class="no-data flex flex-col items-center justify-center py-16"
-                >
-                  <div class="no-data-icon text-4xl mb-2">📊</div>
-                  <div class="no-data-text text-gray-500 text-base">无数据</div>
-                </div>
+              <div class="bet-history-content">
+                <table class="w-full text-sm text-left">
+                  <thead>
+                    <tr class="border-b border-gray-700">
+                      <th class="py-2 px-2">下注时间</th>
+                      <th class="py-2 px-2">直播房间ID</th>
+                      <th class="py-2 px-2">游戏类型</th>
+                      <th class="py-2 px-2">游戏局号</th>
+                      <th class="py-2 px-2">投注内容</th>
+                      <th class="py-2 px-2">下注金额</th>
+                      <th class="py-2 px-2">结算状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-if="myBets.length === 0">
+                      <td colspan="7" class="text-center text-gray-400 py-4">无投注历史</td>
+                    </tr>
+                    <tr
+                      v-for="bet in myBets"
+                      :key="bet.id"
+                      class="border-b border-gray-800"
+                    >
+                      <td class="py-2 px-2">{{ bet.betTime || '-' }}</td>
+                      <td class="py-2 px-2">{{ bet.liveStreamId || '-' }}</td>
+                      <td class="py-2 px-2">{{ bet.gameType || '-' }}</td>
+                      <td class="py-2 px-2">{{ bet.gameRound || '-' }}</td>
+                      <td class="py-2 px-2">{{ bet.betContent || '-' }}</td>
+                      <td class="py-2 px-2">{{ bet.betNum || '-' }}</td>
+                      <td class="py-2 px-2">
+                        <span v-if="bet.isActive === 1" class="text-green-400">已结算</span>
+                        <span v-else class="text-yellow-400">未结算</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </section>
@@ -73,21 +92,21 @@ import AppHeader from "../components/AppHeader.vue";
 import axios from "axios";
 
 const userInfo = ref({});
+const myBets = ref([]);
 
 async function loadUserInfo() {
   const info = localStorage.getItem("userInfo");
   if (info) {
     try {
       const localUser = JSON.parse(info);
-      // 优先用 localUser.id，如果没有则尝试 user.account
-      if (localUser.id) {
-        // 使用 /info/{id} 接口获取 account、name、points
+      if (localUser.account) {
+        // 用 /app/gameUser/points?account=xxx 获取积分
         const res = await axios.get(
-          `http://localhost:8080/app/user/info/${localUser.id}`
+          `http://localhost:8080/app/gameUser/points`,
+          { params: { account: localUser.account } }
         );
-        if (res.data.code === 200 && res.data.user) {
-          // 补充 id 字段，防止后端未返回
-          const user = { ...res.data.user, id: localUser.id };
+        if (res.data.code === 200 && typeof res.data.data === 'number') {
+          const user = { ...localUser, points: res.data.data };
           userInfo.value = user;
           localStorage.setItem("userInfo", JSON.stringify(user));
         } else {
@@ -102,8 +121,37 @@ async function loadUserInfo() {
   }
 }
 
+async function loadMyBets() {
+  const info = localStorage.getItem("userInfo");
+  if (!info) {
+    myBets.value = [];
+    return;
+  }
+  const user = JSON.parse(info);
+  if (!user.account) {
+    myBets.value = [];
+    return;
+  }
+  try {
+    // 查询当前用户的所有投注记录（不限定直播间）
+    const res = await axios.get('http://localhost:8080/app/gameRecord/list', {
+      params: {
+        gameUserAccount: user.account
+      }
+    });
+    if (res.data.code === 200 && Array.isArray(res.data.rows)) {
+      myBets.value = res.data.rows;
+    } else {
+      myBets.value = [];
+    }
+  } catch (e) {
+    myBets.value = [];
+  }
+}
+
 onMounted(() => {
   loadUserInfo();
+  loadMyBets();
 });
 </script>
 
@@ -135,8 +183,8 @@ onMounted(() => {
 }
 .menu-item.active,
 .menu-item.text-\#2563eb {
-  background: #2d2d2d !important;
-  color: #e53e3e !important;
+  background: #e53e3e !important;
+  color: #222 !important;
 }
 .bet-header {
   border-bottom: 1px solid #333;
@@ -146,6 +194,31 @@ onMounted(() => {
 .bet-history {
   background: #232326 !important;
   color: #f5f5f5 !important;
+}
+.bet-history-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.bet-history-content th, .bet-history-content td {
+  background: transparent !important;
+  color: #f5f5f5 !important;
+}
+.bet-history-content th {
+  font-weight: bold;
+  background: #232326 !important;
+  color: #fff !important;
+}
+.bet-history-content tr {
+  border-bottom: 1px solid #333;
+}
+.bet-history-content tr:last-child {
+  border-bottom: none;
+}
+.text-green-400 {
+  color: #4ade80 !important;
+}
+.text-yellow-400 {
+  color: #facc15 !important;
 }
 .bet-stat-value {
   color: #e53e3e !important;

@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-[#f6f7fb]">
     <AppHeader />
     <main class="main pt-20 pb-10" v-if="userInfo && userInfo.account">
-      <div class="user container mx-auto max-w-6xl px-2">
+      <div class="user container mx-auto max-w-6xl px-2 ">
         <div class="user-container flex flex-col md:flex-row gap-8 mt-8">
           <!-- 侧边栏 -->
           <aside
@@ -26,15 +26,15 @@
               </div>
             </div>
             <nav class="user-menu flex flex-col gap-2 w-full">
-              <a
-                href="/user/profile"
-                class="menu-item text-[#2563eb] font-semibold rounded px-3 py-2 bg-[#f3f6fa]"
-                >用户信息</a
+              <router-link
+                to="/user/profile"
+                class="menu-item text-[#fcfcfc] font-semibold rounded px-3 py-2 bg-[#801515]"
+                >用户信息</router-link
               >
-              <a
-                href="/user/bet"
-                class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2"
-                >投注历史</a
+              <router-link
+                to="/user/bet"
+                class="menu-item hover:bg-[#801515] rounded px-3 py-2"
+                >投注历史</router-link
               >
               <!-- <a href="/user/recharge" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">存款</a>
                 <a href="/user/withdraw" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">提款</a> -->
@@ -126,25 +126,25 @@ async function loadUserInfo() {
   if (info) {
     try {
       const localUser = JSON.parse(info);
-      if (localUser.id) {
+      if (localUser.account) {
+        // 用 /app/gameUser/points?account=xxx 获取积分
         const res = await axios.get(
-          `http://localhost:8080/app/user/info/${localUser.id}`
+          `http://localhost:8080/app/gameUser/points`,
+          { params: { account: localUser.account } }
         );
-        if (res.data.code === 200 && res.data.user) {
-          const user = { ...res.data.user, id: localUser.id };
+        if (res.data.code === 200 && typeof res.data.data === 'number') {
+          const user = { ...localUser, points: res.data.data };
           userInfo.value = user;
           localStorage.setItem("userInfo", JSON.stringify(user));
         } else {
           userInfo.value = localUser;
         }
       } else {
-        userInfo.value = {};
+        userInfo.value = localUser;
       }
     } catch {
       userInfo.value = {};
     }
-  } else {
-    userInfo.value = {};
   }
 }
 
@@ -179,10 +179,10 @@ onMounted(() => {
   transition: background 0.2s;
   color: #f5f5f5 !important;
 }
-.menu-item.active,
-.menu-item.text-#2563eb {
-  background: #2d2d2d !important;
-  color: #e53e3e !important;
+.menu-item.text-\#2563eb,
+.menu-item.active {
+  background: #e53e3e !important;
+  color: #222 !important;
 }
 .profile-header {
   border-bottom: 1px solid #333;
