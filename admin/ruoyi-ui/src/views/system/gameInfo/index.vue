@@ -50,7 +50,6 @@
         >
           <el-option label="投注中" value="投注中" />
           <el-option label="封盘" value="封盘" />
-          <el-option label="已开奖" value="已开奖" />
           <el-option label="已结算" value="已结算" />
         </el-select>
       </el-form-item>
@@ -217,7 +216,6 @@
           >
             <el-option label="投注中" value="投注中" />
             <el-option label="封盘" value="封盘" />
-            <el-option label="已开奖" value="已开奖" />
             <el-option label="已结算" value="已结算" />
           </el-select>
         </el-form-item>

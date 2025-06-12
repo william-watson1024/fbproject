@@ -2,8 +2,10 @@ package com.ruoyi.web.controller.app;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.FbGameInfo;
 import com.ruoyi.system.domain.FbGameRecord;
 import com.ruoyi.system.domain.FbGameUser;
+import com.ruoyi.system.service.IFbGameInfoService;
 import com.ruoyi.system.service.IFbGameRecordService;
 import com.ruoyi.system.service.IFbGameUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ public class AppGameUserController extends BaseController {
     private String rechargeToken;
     @Autowired
     private IFbGameRecordService fbGameRecordService;
+
+    @Autowired
+    private IFbGameInfoService fbGameInfoService;
 
     /**
      * 登录接口
@@ -172,6 +177,13 @@ public class AppGameUserController extends BaseController {
             @RequestParam String betName,
             @RequestParam String betContent
     ) {
+        LocalDateTime now = LocalDateTime.now();
+        FbGameInfo fbGameInfo= fbGameInfoService.selectFbGameInfoByGameInfo(gameRound);
+        if (fbGameInfo.getCloseTime() != null && fbGameInfo.getCloseTime().isBefore(now)) {
+            fbGameInfo.setGameStatus("已封盘");
+            fbGameInfoService.updateFbGameInfo(fbGameInfo);
+            return AjaxResult.error("当前游戏已封盘，无法下注");
+        }
         if (points == null || points <= 0) {
             return AjaxResult.error("下注积分必须大于0");
         }
