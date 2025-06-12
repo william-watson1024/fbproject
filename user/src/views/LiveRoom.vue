@@ -43,21 +43,6 @@
                     {{ currentGame && currentGame.gameStatus ? currentGame.gameStatus : '-' }}
                   </span>
                 </div>
-                <div class="text-sm mb-1">
-                  开奖结果：
-                  <span class="font-semibold">
-                    {{ currentGame && currentGame.result ? currentGame.result : '-' }}
-                  </span>
-                </div>
-                <div class="text-sm mb-1">
-                  开局时间：{{ currentGame && currentGame.startTime ? currentGame.startTime : '-' }}
-                </div>
-                <div class="text-sm mb-1">
-                  封盘时间：{{ currentGame && currentGame.closeTime ? currentGame.closeTime : '-' }}
-                </div>
-                <div class="text-sm mb-1">
-                  结算时间：{{ currentGame && currentGame.endTime ? currentGame.endTime : '-' }}
-                </div>
               </div>
               <div class="flex flex-col items-center justify-center min-w-[120px]">
                 <div class="text-base font-bold mb-1">倒计时</div>

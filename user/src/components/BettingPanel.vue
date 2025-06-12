@@ -36,7 +36,7 @@
     <input
       type="text"
       placeholder="10"
-      class="border border-gray-300 p-2 w-full rounded mb-2"
+      class="border border-gray-300 p-2 w-full rounded mb-2 text-black"
       v-model="displayAmount"
       @input="onInputAmount"
     />
