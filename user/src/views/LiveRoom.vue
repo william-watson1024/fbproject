@@ -31,9 +31,10 @@
           </div>
           <!-- 主体内容 -->
           <div class="room-main flex flex-col gap-6 px-8 py-8">
+            <!-- 移动端：游戏信息和倒计时合并到视频上方 -->
             <!-- 当前游戏和倒计时（始终显示） -->
-            <div class="mb-4 p-4 bg-[#18181c] rounded-xl shadow flex flex-col md:flex-row md:items-center md:gap-8">
-              <div class="flex-1">
+            <div class="mb-4 p-4 bg-[#18181c] rounded-xl shadow game-info-bar flex flex-col items-center justify-center text-center md:flex-row md:items-center md:justify-between md:text-left md:gap-8">
+              <div class="flex-1 w-full md:w-auto md:text-left">
                 <div class="text-lg font-bold mb-1">
                   当前游戏局号：{{ currentGame && currentGame.gameRound ? currentGame.gameRound : '无进行中游戏' }}
                 </div>
@@ -44,7 +45,7 @@
                   </span>
                 </div>
               </div>
-              <div class="flex flex-col items-center justify-center min-w-[120px]">
+              <div class="flex flex-col items-center justify-center min-w-[120px] w-full md:w-auto md:items-end md:text-right">
                 <div class="text-base font-bold mb-1">倒计时</div>
                 <div class="text-2xl font-mono text-goodred">
                   {{ countdown }}
@@ -53,18 +54,20 @@
             </div>
             <!-- 视频区域 -->
             <div class="room-video mb-4 w-full">
-              <div
-                class="video-placeholder relative rounded-xl overflow-hidden border border-gray-200"
-              >
+              <div class="video-placeholder relative rounded-xl overflow-hidden border border-gray-200 video-responsive">
                 <iframe
-                  v-if="roomInfo.url"
-                  :src="roomInfo.url"
-                  class="room-iframe w-full min-h-[600px] bg-black"
-                  frameborder="0"
-                  scrolling="no"
-                  allowfullscreen="true"
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                ></iframe>
+  v-if="roomInfo.url"
+  :src="roomInfo.url"
+  class="room-iframe w-full bg-black"
+  frameborder="0"
+  scrolling="no"
+  allowfullscreen
+  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+  allowtransparency="true"
+  muted
+  playsinline
+></iframe>
+
                 <div v-else class="text-center text-gray-400 py-12">
                   暂无直播链接
                 </div>
@@ -393,8 +396,19 @@ watch(currentGame, updateCountdown)
   background: #e53e3e !important;
   color: #fff !important;
 }
+.video-responsive {
+  aspect-ratio: 16/9;
+  width: 100%;
+  height: auto;
+  background: #000;
+  position: relative;
+}
 .room-iframe {
-  min-height: 600px;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: unset !important;
+  aspect-ratio: 16/9;
+  display: block;
   background: #000;
 }
 .section-title-bar {
@@ -431,14 +445,41 @@ watch(currentGame, updateCountdown)
   color: #e53e3e !important;
 }
 @media (max-width: 900px) {
-  .room-main {
-    flex-direction: column;
+  .game-info-bar {
+    margin-bottom: 0.5rem !important;
+    padding: 0.75rem !important;
+    border-radius: 10px;
   }
-  .section-title-bar {
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .video-responsive {
+    aspect-ratio: 16/9;
+    min-height: unset !important;
+    height: auto !important;
+    max-height: 220px;
+  }
+  .room-iframe {
+    aspect-ratio: 16/9;
+    min-height: unset !important;
+    height: 100% !important;
+    max-height: 220px;
+  }
+}
+@media (max-width: 600px) {
+  .game-info-bar {
+    margin-bottom: 0.25rem !important;
+    padding: 0.5rem !important;
+    border-radius: 8px;
+  }
+  .video-responsive {
+    aspect-ratio: 16/9;
+    min-height: unset !important;
+    height: auto !important;
+    max-height: 160px;
+  }
+  .room-iframe {
+    aspect-ratio: 16/9;
+    min-height: unset !important;
+    height: 100% !important;
+    max-height: 160px;
   }
 }
 </style>
