@@ -71,8 +71,8 @@
                       <td class="py-2 px-2">{{ bet.betContent || '-' }}</td>
                       <td class="py-2 px-2">{{ bet.betNum || '-' }}</td>
                       <td class="py-2 px-2">
-                        <span v-if="bet.isActive === 1" class="text-green-400">已结算</span>
-                        <span v-else class="text-yellow-400">未结算</span>
+                        <span v-if="bet.isActive === 1" class="text-yellow-400">未结算</span>
+                        <span v-else class="text-green-400">已结算</span>
                       </td>
                     </tr>
                   </tbody>
