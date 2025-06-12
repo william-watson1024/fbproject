@@ -48,16 +48,15 @@ const rooms = ref([])
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:8080/app/myfbweb/listAvailable')
+    // 正确接口：/app/liveStream/getLiveStreamList
+    const res = await axios.get('http://localhost:8080/app/liveStream/getLiveStreamList')
     if (res.data.code === 200 && Array.isArray(res.data.data)) {
-      console.log('rooms:', res.data.data)
       rooms.value = res.data.data.map((item, idx) => ({
         id: item.id,
-        title: item.name, // 用后端的name字段
-        host: item.host || '', // 后端无host字段可用'-'或空
-        // 随机选择图片
+        title: item.name, // 直播间名称
+        host: item.gameHost || '', // 主播名
         image: Math.random() > 0.5 ? cover00 : cover01,
-        link: `/room/${item.id}`, // 跳转到房间详情页
+        link: `/room/${item.id}`,
         title_zh: item.description || '' // 用description作为副标题
       }))
     }

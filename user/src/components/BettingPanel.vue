@@ -83,7 +83,10 @@ const amountMap = {
 };
 
 const props = defineProps({
-  amount: String
+  amount: String,
+  liveStreamId: [String, Number],
+  gameType: String,
+  gameRound: [String, Number]
 })
 const selectedAnimal = ref('')
 const selectedAmount = ref('')
@@ -125,22 +128,24 @@ watch(() => props.amount, (val) => {
 // 获取用户积分
 async function fetchPoints() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
-  if (!userInfo.id) {
+  if (!userInfo.account) {
     points.value = 0
     return
   }
   try {
-    // 用新的 /info/{id} 接口获取 account、name、points
-    const res = await axios.get(`http://localhost:8080/app/user/info/${userInfo.id}`)
-    if (res.data.code === 200 && res.data.user) {
-      // 更新 points 变量和本地缓存
-      points.value = res.data.user.points
-      const newUserInfo = { ...userInfo, ...res.data.user, id: userInfo.id }
+    // 用新的 /app/gameUser/points?account=xxx 接口获取积分
+    const res = await axios.get(`http://localhost:8080/app/gameUser/points`, {
+      params: { account: userInfo.account }
+    })
+    if (res.data.code === 200 && typeof res.data.data === 'number') {
+      points.value = res.data.data
+      // 更新本地缓存
+      const newUserInfo = { ...userInfo, points: res.data.data }
       localStorage.setItem('userInfo', JSON.stringify(newUserInfo))
     }
   } catch {
-      userInfo.value = {};
-    }
+    points.value = 0
+  }
 }
 
 // 刷新按钮
@@ -168,24 +173,37 @@ async function handleBet() {
     betMsg.value = '请输入有效下注金额'
     return
   }
-  // 获取当前用户ID和账号
+  // 获取当前用户账号
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
-  if (!userInfo.id) {
+  if (!userInfo.account) {
     betMsg.value = '请先登录'
+    return
+  }
+  if (!props.liveStreamId) {
+    betMsg.value = '房间信息缺失，无法下注'
+    return
+  }
+  if (!props.gameRound || isNaN(Number(props.gameRound))) {
+    betMsg.value = '当前游戏局号无效，无法下注'
     return
   }
   betting.value = true
   try {
-    const res = await axios.post('http://localhost:8080/app/mybetrecord/add', {
-      myFbuserId: userInfo.id,
-      myFbuserAccount: userInfo.account,
-      betNum: Number(inputAmount.value),
-      betName: selectedAnimal.value
-    })
+    // 下注接口参数补全
+    const payload = {
+      account: userInfo.account,
+      points: Number(inputAmount.value),
+      liveStreamId: props.liveStreamId,
+      gameType: props.gameType || '',
+      gameRound: Number(props.gameRound),
+      betName: selectedAnimal.value,
+      betContent: selectedAnimal.value
+    }
+    const res = await axios.post('http://localhost:8080/app/gameUser/deductPoints', null, { params: payload })
     if (res.data.code === 200) {
       betMsg.value = res.data.msg || '下注成功'
-      // 下注成功后刷新积分
       await fetchPoints()
+      // 下注成功后，前端不做任何 isActive 状态处理，直接等待后台结算，投注历史自动刷新即可
     } else {
       betMsg.value = res.data.msg || '下注失败'
     }

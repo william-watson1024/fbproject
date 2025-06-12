@@ -90,27 +90,59 @@ async function loginOrRegister() {
     return;
   }
   try {
-    const res = await axios.post("http://localhost:8080/app/user/login", {
-      account: account.value,
-      password: password.value,
-      name: account.value, // 可选，后端会自动处理
-    });
-    if (res.data.code === 200 && res.data.user) {
-      if (res.data.msg && res.data.msg.includes("注册")) {
-        tip.value = "账号不存在，已自动注册并登录";
-      } else {
-        tip.value = "登录成功";
+    // 先尝试登录
+    const res = await axios.post("http://localhost:8080/app/gameUser/login", null, {
+      params: {
+        account: account.value,
+        password: password.value
       }
-      localStorage.setItem("userInfo", JSON.stringify(res.data.user));
-      emit("success", { user: res.data.user });
+    });
+    if (res.data.code === 200 && res.data.data) {
+      tip.value = "登录成功";
+      localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+      emit("success", { user: res.data.data });
       setTimeout(() => {
         close();
       }, 1000);
     } else {
-      passwordError.value = res.data.msg || "登录失败";
+      // 登录失败，尝试注册并登录
+      if (res.data.msg && res.data.msg.includes("不存在")) {
+        await tryRegisterAndLogin();
+      } else {
+        passwordError.value = res.data.msg || "登录失败";
+      }
     }
   } catch (err) {
-    passwordError.value = err.response?.data?.msg || "登录失败";
+    // 登录接口报错，尝试注册并登录
+    if (err.response && err.response.data && err.response.data.msg && err.response.data.msg.includes("不存在")) {
+      await tryRegisterAndLogin();
+    } else {
+      passwordError.value = err.response?.data?.msg || "登录失败";
+    }
+  }
+}
+
+async function tryRegisterAndLogin() {
+  try {
+    const res = await axios.post("http://localhost:8080/app/gameUser/registerAndLogin", null, {
+      params: {
+        account: account.value,
+        password: password.value,
+        name: account.value
+      }
+    });
+    if (res.data.code === 200 && res.data.data) {
+      tip.value = "账号不存在，已自动注册并登录";
+      localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+      emit("success", { user: res.data.data });
+      setTimeout(() => {
+        close();
+      }, 1000);
+    } else {
+      passwordError.value = res.data.msg || "注册失败";
+    }
+  } catch (err) {
+    passwordError.value = err.response?.data?.msg || "注册失败";
   }
 }
 </script>
