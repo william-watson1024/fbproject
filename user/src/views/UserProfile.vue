@@ -22,33 +22,31 @@
                 {{ userInfo.name || "-" }}
               </div>
               <div class="user-balance text-sm text-gray-600 mt-1">
-                余额：{{ userInfo.points ?? "0" }}
+                Số dư: {{ userInfo.points ?? "0" }}
               </div>
             </div>
             <nav class="user-menu flex flex-col gap-2 w-full">
               <router-link
                 to="/user/profile"
                 class="menu-item text-[#fcfcfc] font-semibold rounded px-3 py-2 bg-[#801515]"
-                >用户信息</router-link
+                >Thông tin người dùng</router-link
               >
               <router-link
                 to="/user/bet"
                 class="menu-item hover:bg-[#801515] rounded px-3 py-2"
-                >投注历史</router-link
+                >Lịch sử cược</router-link
               >
-              <!-- <a href="/user/recharge" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">存款</a>
-                <a href="/user/withdraw" class="menu-item hover:bg-[#f3f6fa] rounded px-3 py-2">提款</a> -->
             </nav>
           </aside>
           <!-- 主体内容 -->
           <section class="user-content flex-1">
             <div class="profile bg-white rounded-xl shadow p-8">
               <div class="profile-header flex items-center gap-4 mb-6">
-                <h2 class="text-xl font-bold">用户信息</h2>
+                <h2 class="text-xl font-bold">Thông tin người dùng</h2>
                 <div
                   class="profile-status active text-green-600 text-sm font-semibold bg-green-50 px-3 py-1 rounded"
                 >
-                  活动
+                  Hoạt động
                 </div>
               </div>
               <div class="profile-content">
@@ -57,50 +55,43 @@
                     class="profile-form grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
                     <div class="form-group flex flex-col">
-                      <label class="mb-1 font-medium">用户名</label>
+                      <label class="mb-1 font-medium">Tên đăng nhập</label>
                       <div class="form-value bg-gray-100 rounded px-3 py-2">
                         {{ userInfo.account || "-" }}
                       </div>
                     </div>
                     <div class="form-group flex flex-col">
-                      <label class="mb-1 font-medium">昵称</label>
+                      <label class="mb-1 font-medium">Biệt danh</label>
                       <input
                         type="text"
-                        placeholder="昵称"
+                        placeholder="Biệt danh"
                         class="form-input border rounded px-3 py-2"
                         v-model="userInfo.name"
                       />
                     </div>
                     <div class="form-group flex flex-col">
-                      <label class="mb-1 font-medium">剩余</label>
+                      <label class="mb-1 font-medium">Số dư</label>
                       <div
                         class="form-value balance-value bg-gray-100 rounded px-3 py-2"
                       >
-                        积分：{{ userInfo.points ?? "0" }}
+                        {{ userInfo.points ?? "0" }}
                       </div>
                     </div>
                     <div class="form-group flex flex-col">
-                      <label class="mb-1 font-medium">角色</label>
+                      <label class="mb-1 font-medium">Vai trò</label>
                       <div
                         class="form-value role-value bg-gray-100 rounded px-3 py-2"
                       >
-                        普通用户
+                        <!-- 这里可根据 userInfo.role 显示不同角色 -->
+                        {{ userInfo.role || "-" }}
                       </div>
                     </div>
-                    <!-- <div class="form-group flex flex-col">
-                        <label class="mb-1 font-medium">创建时间</label>
-                        <div class="form-value bg-gray-100 rounded px-3 py-2">2025/5/31 10:22:53</div>
-                      </div>
-                      <div class="form-group flex flex-col">
-                        <label class="mb-1 font-medium">邀请码</label>
-                        <input type="text" placeholder="邀请码" class="form-input border rounded px-3 py-2" />
-                      </div> -->
                   </form>
                   <div class="form-actions mt-6">
                     <button
                       class="save-button bg-[#2563eb] text-white px-6 py-2 rounded font-semibold hover:bg-[#1d4ed8]"
                     >
-                      保存
+                      Lưu
                     </button>
                   </div>
                 </div>
@@ -110,7 +101,7 @@
         </div>
       </div>
     </main>
-    <div v-else class="text-center text-gray-400 py-20">加载中...</div>
+    <div v-else class="text-center text-gray-400 py-20">Đang tải...</div>
   </div>
 </template>
 

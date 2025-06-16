@@ -159,6 +159,85 @@
 
 ## 二、管理端接口（/system/）
 
+# 管理端接口测试用例
+
+## 1. 验证码以及uuid获取
+
+- **接口路径**：`GET /captchaImage`
+- **请求参数**（可选过滤）
+
+
+- **返回示例**（成功）：
+```json
+{
+    "msg": "操作成功",
+    "img": "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",
+    "code": 200,
+    "captchaEnabled": true,
+    "uuid": "60b2522cc98d443db7a2a281066d51b2"
+}
+```
+
+- **注意事项**：
+  - 获取返回信息`img`后需要在返回信息前面加上`data:image/jpeg;base64,`然后复制一整段，并在浏览器中打开，即可看到验证码图片，根据图片计算获得登录需要的验证码`code`字段，`uuid`字段可以直接获取
+
+## 2. 管理员登录（获取 token）
+
+- **接口路径**：`POST /login`
+- **请求参数**（JSON）：
+
+  - `username`：用户名
+  - `password`：密码
+  - `code`：验证码（如启用验证码时必填，否则可省略）
+  - `uuid`：验证码唯一标识（如启用验证码时必填，否则可省略）
+
+
+- **返回示例**（成功）：
+```json
+{
+    "msg": "操作成功",
+    "code": 200,
+    "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImxvZ2luX3VzZXJfa2V5IjoiZTc5YThkYzQtNGI5OC00ZjBhLWFiYTQtMzhlOWM0ODhiYjM5In0.xCaQTIYipvDkRfgDzjm3rBUA-MbXq5NdcQbkUiP-Ugb8se3hXM4CAUVADP0LoWRXnpxZBkLi_wfiKhd9cvjYrA"
+}
+```
+
+- **用例表**：
+
+| 用例编号   | 用例描述     | 输入参数（JSON）                                         | 预期结果                      |
+|------------|--------------|----------------------------------------------------------|-------------------------------|
+| M-LOGIN-01 | 正常登录     | username=admin, password=123456, code=, uuid=             | 返回 code=200，含 token       |
+| M-LOGIN-02 | 密码错误     | username=admin, password=wrong                           | 返回 code!=200，msg 登录失败  |
+| M-LOGIN-03 | 缺少参数     | username=admin                                          | 返回参数缺失错误              |
+| M-LOGIN-04 | 验证码错误   | username=admin, password=123456, code=wrong, uuid=xxx    | 返回验证码错误                |
+
+- **注意事项**：
+  - 登录成功后，需保存返回的 `token`，后续所有管理端接口都需在请求头携带：`Authorization: token`, 可以在apifox中设置全局参数，避免多次重复设置
+  - token 失效或未携带时，接口会返回 401 未授权
+
+## 3. 用户管理相关接口
+| 用例编号 | 接口               | 方法 | 参数         | 预期结果      | 备注          |
+| -------- | ------------------ | ---- | ------------ | ------------- | ------------- |
+| U-1      | /admin/user/list   | GET  | -            | 返回用户列表  | 需带 token    |
+| U-2      | /admin/user/add    | POST | 用户信息     | 新增成功      | 需带 token    |
+| U-3      | /admin/user/edit   | POST | 用户信息     | 编辑成功      | 需带 token    |
+| U-4      | /admin/user/delete | POST | 用户id       | 删除成功      | 需带 token    |
+| U-5      | /admin/user/list   | GET  | 无/错误token | 返回401未授权 | token失效用例 |
+
+## 4. 其他管理端接口
+| 用例编号 | 接口       | 方法 | 参数 | 预期结果 | 备注       |
+| -------- | ---------- | ---- | ---- | -------- | ---------- |
+| O-1      | /admin/xxx | ...  | ...  | ...      | 需带 token |
+
+## 5. Token 失效/未登录用例
+| 用例编号 | 场景      | 操作               | 预期结果              |
+| -------- | --------- | ------------------ | --------------------- |
+| T-1      | token失效 | 请求任意管理端接口 | 返回401，前端跳转登录 |
+| T-2      | 未登录    | 请求任意管理端接口 | 返回401，前端跳转登录 |
+
+---
+
+**所有管理端接口均需先登录获取 token，后续请求需在请求头加 `Authorization: token`，否则返回未授权。**
+
 ### 1. 直播网站管理
 
 #### 1.1 查询直播网站列表
@@ -255,4 +334,7 @@
 |----------|--------------------|------------------|--------------------|
 | M-TC026  | 正常生成           | account=admin    | 返回token，5分钟有效 |
 | M-TC027  | 5分钟后失效        | account=admin    | token失效           |
+
+---
+
 

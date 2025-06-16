@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen bg-[#f6f7fb]">
     <AppHeader />
-    <main class="main pt-20 pb-10">
+    <main class="main pt-16 pb-10">
       <div class="room container mx-auto max-w-6xl px-2">
         <div class="room-content bg-white rounded-2xl shadow-xl p-0">
           <!-- 头部信息 -->
           <div class="room-header border-b px-8 pt-8 pb-4">
             <h1 class="text-2xl font-bold text-white-custom mb-2">
-              {{ roomInfo.title || "直播间" }}
+              {{ roomInfo.title || "Phòng phát sóng" }}
             </h1>
             <div
               class="room-info flex flex-wrap items-center gap-4 text-gray-700 text-sm"
@@ -18,35 +18,34 @@
                 <span
                   class="live-dot w-2 h-2 bg-[#e53e3e] rounded-full animate-pulse"
                 ></span>
-                广播
+                Phát sóng
               </span>
               <span class="room-streamer">
-                广播公司: {{ roomInfo.host || "-" }}
+                Đơn vị phát sóng: {{ roomInfo.host || "-" }}
               </span>
-              <span class="room-period"> Ky: {{ roomInfo.code || "-" }} </span>
+              <span class="room-period"> Kỳ: {{ roomInfo.code || "-" }} </span>
               <span class="room-period-status closed text-red-custom">
-                {{ roomInfo.statusText || "关闭" }}
+                {{ roomInfo.statusText || "Đã đóng" }}
               </span>
             </div>
           </div>
           <!-- 主体内容 -->
           <div class="room-main flex flex-col gap-6 px-8 py-8">
-            <!-- 移动端：游戏信息和倒计时合并到视频上方 -->
             <!-- 当前游戏和倒计时（始终显示） -->
             <div class="mb-4 p-4 bg-[#18181c] rounded-xl shadow game-info-bar flex flex-col items-center justify-center text-center md:flex-row md:items-center md:justify-between md:text-left md:gap-8">
               <div class="flex-1 w-full md:w-auto md:text-left">
                 <div class="text-lg font-bold mb-1">
-                  当前游戏局号：{{ currentGame && currentGame.gameRound ? currentGame.gameRound : '无进行中游戏' }}
+                  Mã ván hiện tại: {{ currentGame && currentGame.gameRound ? currentGame.gameRound : 'Không có ván đang diễn ra' }}
                 </div>
                 <div class="text-sm mb-1">
-                  状态：
+                  Trạng thái:
                   <span class="font-semibold text-goodred">
                     {{ currentGame && currentGame.gameStatus ? currentGame.gameStatus : '-' }}
                   </span>
                 </div>
               </div>
               <div class="flex flex-col items-center justify-center min-w-[120px] w-full md:w-auto md:items-end md:text-right">
-                <div class="text-base font-bold mb-1">倒计时</div>
+                <div class="text-base font-bold mb-1">Đếm ngược</div>
                 <div class="text-2xl font-mono text-goodred">
                   {{ countdown }}
                 </div>
@@ -67,9 +66,8 @@
   muted
   playsinline
 ></iframe>
-
                 <div v-else class="text-center text-gray-400 py-12">
-                  暂无直播链接
+                  Không có liên kết phát sóng
                 </div>
                 <div
                   class="live-badge absolute top-3 left-3 bg-[#e53e3e] text-white px-3 py-1 rounded-full flex items-center gap-2 text-xs font-bold shadow"
@@ -85,7 +83,7 @@
             <div class="w-full flex flex-col gap-6">
               <div class="bg-white rounded-xl shadow p-0 w-full">
                 <div class="section-title-bar">
-                  <h3 class="section-title">下注</h3>
+                  <h3 class="section-title">Đặt cược</h3>
                 </div>
                 <div class="p-6">
                   <BettingPanel
@@ -100,7 +98,7 @@
               </div>
               <div class="bg-white rounded-xl shadow p-0 w-full">
                 <div class="section-title-bar">
-                  <h3 class="section-title">快速操作</h3>
+                  <h3 class="section-title">Tác vụ nhanh</h3>
                 </div>
                 <div class="p-6">
                   <QuickActions />
@@ -110,7 +108,7 @@
             <!-- 最近结果 -->
             <div class="bg-white rounded-xl shadow p-0 mx-0 mb-0">
               <div class="section-title-bar">
-                <h3 class="section-title">最近的结果</h3>
+                <h3 class="section-title">Kết quả gần đây</h3>
               </div>
               <div class="p-6">
                 <ResultList :results="recentResults" />
@@ -119,12 +117,12 @@
             <!-- 公告 -->
             <div class="bg-white rounded-xl shadow p-0 mx-0 mb-0">
               <div class="section-title-bar">
-                <h3 class="section-title">公告</h3>
+                <h3 class="section-title">Thông báo</h3>
               </div>
               <div class="p-6">
                 <div class="announcements">
                   <div class="no-data text-gray-400 text-center py-4">
-                    <p>无通知</p>
+                    <p>Không có thông báo</p>
                   </div>
                 </div>
               </div>
@@ -135,7 +133,7 @@
                 class="bet-history-header flex items-center justify-between mb-4"
               >
                 <div class="section-title-bar">
-                  <h3 class="section-title">我的投注</h3>
+                  <h3 class="section-title">Cược của tôi</h3>
                 </div>
               </div>
               <div class="p-6">
@@ -143,16 +141,16 @@
                   <table class="w-full text-sm text-left">
                     <thead>
                       <tr class="border-b border-gray-700">
-                        <th class="py-2 px-2">下注时间</th>
-                        <th class="py-2 px-2">游戏局号</th>
-                        <th class="py-2 px-2">投注内容</th>
-                        <th class="py-2 px-2">下注金额</th>
-                        <th class="py-2 px-2">结算状态</th>
+                        <th class="py-2 px-2">Thời gian cược</th>
+                        <th class="py-2 px-2">Mã ván</th>
+                        <th class="py-2 px-2">Nội dung cược</th>
+                        <th class="py-2 px-2">Số tiền cược</th>
+                        <th class="py-2 px-2">Trạng thái</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-if="myBets.length === 0">
-                        <td colspan="5" class="text-center text-gray-400 py-4">无投注历史</td>
+                        <td colspan="5" class="text-center text-gray-400 py-4">Không có lịch sử cược</td>
                       </tr>
                       <tr
                         v-for="bet in myBets"
@@ -164,8 +162,8 @@
                         <td class="py-2 px-2">{{ bet.betContent || '-' }}</td>
                         <td class="py-2 px-2">{{ bet.betNum || '-' }}</td>
                         <td class="py-2 px-2">
-                          <span v-if="bet.isActive === 1" class="text-yellow-400">未结算</span>
-                          <span v-else class="text-green-400">已结算</span>
+                          <span v-if="bet.isActive === 1" class="text-yellow-400">Chưa kết toán</span>
+                          <span v-else class="text-green-400">Đã kết toán</span>
                         </td>
                       </tr>
                     </tbody>
@@ -294,16 +292,26 @@ onMounted(async () => {
   }, 5000)
 });
 
+const animals = ["Hươu", "Bầu", "Gà", "Cá", "Cua", "Tôm"];
+const animalIcons = {
+  "Hươu": "🦌",
+  "Bầu": "🎃",
+  "Gà": "🐔",
+  "Cá": "🐟",
+  "Cua": "🦀",
+  "Tôm": "🦐"
+}
+
 const recentResults = [
-  { time: "01:03:26", code: "20250530123", result: "鹿，鸡，虾" },
-  { time: "00:58:47", code: "20250530122", result: "鱼，鱼，螃蟹" },
-  { time: "00:53:22", code: "20250530121", result: "鹿，葫芦，螃蟹" },
-  { time: "00:48:24", code: "20250530120", result: "鹿，葫芦，虾" },
-  { time: "00:43:25", code: "20250530119", result: "葫芦，鱼，虾" },
-  { time: "00:38:38", code: "20250530118", result: "鹿，鸡，鱼" },
-  { time: "00:33:52", code: "20250530117", result: "鹿，鸡，螃蟹" },
-  { time: "00:28:35", code: "20250530116", result: "鹿，鹿，鹿" },
-  { time: "00:17:43", code: "20250530115", result: "鹿，葫芦，螃蟹" },
+  { time: "01:03:26", code: "20250530123", result: "Hươu, Gà, Tôm" },
+  { time: "00:58:47", code: "20250530122", result: "Cá, Cá, Cua" },
+  { time: "00:53:22", code: "20250530121", result: "Hươu, Bầu, Cua" },
+  { time: "00:48:24", code: "20250530120", result: "Hươu, Bầu, Tôm" },
+  { time: "00:43:25", code: "20250530119", result: "Bầu, Cá, Tôm" },
+  { time: "00:38:38", code: "20250530118", result: "Hươu, Gà, Cá" },
+  { time: "00:33:52", code: "20250530117", result: "Hươu, Gà, Cua" },
+  { time: "00:28:35", code: "20250530116", result: "Hươu, Hươu, Hươu" },
+  { time: "00:17:43", code: "20250530115", result: "Hươu, Bầu, Cua" },
 ];
 
 // 取当前游戏局：优先投注中，否则取最新一条（即使是封盘也显示最新一条）
@@ -323,11 +331,11 @@ const currentGame = computed(() => {
 
 // 下注功能可用性判断：只有投注中才可下注，封盘/开奖/结算都不可下注
 const canBet = computed(() => {
-  return currentGame.value && currentGame.value.gameStatus === '投注中'
+  return currentGame.value && currentGame.value.gameStatus === 'Đang đặt cược'
 })
 const betDisabledReason = computed(() => {
-  if (!currentGame.value) return '无进行中游戏，无法下注'
-  if (currentGame.value.gameStatus !== '投注中') return '当前不可下注（' + currentGame.value.gameStatus + '）'
+  if (!currentGame.value) return 'Không có ván nào đang diễn ra, không thể đặt cược'
+  if (currentGame.value.gameStatus !== 'Đang đặt cược') return 'Hiện tại không thể đặt cược (' + currentGame.value.gameStatus + ')'
   return ''
 })
 
@@ -346,12 +354,12 @@ function updateCountdown() {
     if (diff > 0) {
       const min = Math.floor(diff / 60)
       const sec = diff % 60
-      countdown.value = `${min > 0 ? min + '分' : ''}${sec}秒`
+      countdown.value = `${min > 0 ? min + ' phút ' : ''}${sec} giây`
     } else {
-      countdown.value = '已封盘'
+      countdown.value = 'Đã đóng'
     }
   } else {
-    countdown.value = '已封盘'
+    countdown.value = 'Đã đóng'
   }
 }
 
@@ -370,7 +378,7 @@ watch(currentGame, updateCountdown)
 <style scoped>
 .header {
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
-  background: #18181c !important;
+  background: #C02638 !important;
 }
 .min-h-screen, body {
   background: #18181c !important;
@@ -402,6 +410,28 @@ watch(currentGame, updateCountdown)
   height: auto;
   background: #000;
   position: relative;
+  min-height: 320px;
+  max-width: 100%;
+}
+@media (max-width: 900px) {
+  .video-responsive {
+    aspect-ratio: 16/9;
+    min-height: 220px;
+    height: auto !important;
+    max-height: 320px;
+  }
+}
+@media (max-width: 600px) {
+  .video-responsive {
+    aspect-ratio: 16/9;         /* 横屏16:9比例 */
+    width: 100vw;               /* 占满屏幕宽度 */
+    height: 56vw;               /* 16:9比例，高度=宽度的56.25% */
+    max-height: 80vh;           /* 限制最大高度为屏幕的80% */
+    min-height: 220px;          /* 可根据实际需求调整 */
+    margin: 0 auto;
+    background: #000;
+    border-radius: 10px;
+  }
 }
 .room-iframe {
   width: 100% !important;
@@ -418,6 +448,7 @@ watch(currentGame, updateCountdown)
   border-radius: 16px 16px 0 0;
   padding: 0.25rem 1.5rem;
   margin-bottom: 0;
+  margin-top: 0;
   margin-top: 0;
   box-shadow: 0 2px 8px 0 rgba(229, 62, 62, 0.08);
   display: block;
@@ -450,36 +481,12 @@ watch(currentGame, updateCountdown)
     padding: 0.75rem !important;
     border-radius: 10px;
   }
-  .video-responsive {
-    aspect-ratio: 16/9;
-    min-height: unset !important;
-    height: auto !important;
-    max-height: 220px;
-  }
-  .room-iframe {
-    aspect-ratio: 16/9;
-    min-height: unset !important;
-    height: 100% !important;
-    max-height: 220px;
-  }
 }
 @media (max-width: 600px) {
   .game-info-bar {
     margin-bottom: 0.25rem !important;
     padding: 0.5rem !important;
     border-radius: 8px;
-  }
-  .video-responsive {
-    aspect-ratio: 16/9;
-    min-height: unset !important;
-    height: auto !important;
-    max-height: 160px;
-  }
-  .room-iframe {
-    aspect-ratio: 16/9;
-    min-height: unset !important;
-    height: 100% !important;
-    max-height: 160px;
   }
 }
 </style>

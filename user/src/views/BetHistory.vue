@@ -22,42 +22,42 @@
                 {{ userInfo.name || userInfo.account || "-" }}
               </div>
               <div class="user-balance text-sm text-gray-600 mt-1">
-                余额：{{ userInfo.points ?? "0.00" }}
+                Số dư: {{ userInfo.points ?? "0.00" }}
               </div>
             </div>
             <nav class="user-menu flex flex-col gap-2 w-full">
               <router-link
                 to="/user/profile"
                 class="menu-item hover:bg-[#801515] rounded px-3 py-2"
-                >用户信息</router-link>
+                >Thông tin người dùng</router-link>
               <router-link
                 to="/user/bet"
                 class="menu-item text-[#2563eb] font-semibold rounded px-3 py-2 bg-[#801515]"
-                >投注历史</router-link>
+                >Lịch sử cược</router-link>
             </nav>
           </aside>
           <!-- 主体内容 -->
           <section class="user-content flex-1">
             <div class="bet-history bg-white rounded-xl shadow p-8">
               <div class="bet-header flex items-center gap-4 mb-6">
-                <h2 class="text-xl font-bold">投注历史</h2>
+                <h2 class="text-xl font-bold">Lịch sử cược</h2>
               </div>
               <div class="bet-history-content">
                 <table class="w-full text-sm text-left">
                   <thead>
                     <tr class="border-b border-gray-700">
-                      <th class="py-2 px-2">下注时间</th>
-                      <th class="py-2 px-2">直播房间ID</th>
-                      <th class="py-2 px-2">游戏类型</th>
-                      <th class="py-2 px-2">游戏局号</th>
-                      <th class="py-2 px-2">投注内容</th>
-                      <th class="py-2 px-2">下注金额</th>
-                      <th class="py-2 px-2">结算状态</th>
+                      <th class="py-2 px-2">Thời gian cược</th>
+                      <th class="py-2 px-2">ID phòng phát sóng</th>
+                      <th class="py-2 px-2">Loại trò chơi</th>
+                      <th class="py-2 px-2">Mã ván</th>
+                      <th class="py-2 px-2">Nội dung cược</th>
+                      <th class="py-2 px-2">Số tiền cược</th>
+                      <th class="py-2 px-2">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-if="myBets.length === 0">
-                      <td colspan="7" class="text-center text-gray-400 py-4">无投注历史</td>
+                      <td colspan="7" class="text-center text-gray-400 py-4">Không có lịch sử cược</td>
                     </tr>
                     <tr
                       v-for="bet in myBets"
@@ -71,8 +71,8 @@
                       <td class="py-2 px-2">{{ bet.betContent || '-' }}</td>
                       <td class="py-2 px-2">{{ bet.betNum || '-' }}</td>
                       <td class="py-2 px-2">
-                        <span v-if="bet.isActive === 1" class="text-yellow-400">未结算</span>
-                        <span v-else class="text-green-400">已结算</span>
+                        <span v-if="bet.isActive === 1" class="text-yellow-400">Chưa kết toán</span>
+                        <span v-else class="text-green-400">Đã kết toán</span>
                       </td>
                     </tr>
                   </tbody>

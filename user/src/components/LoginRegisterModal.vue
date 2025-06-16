@@ -14,27 +14,27 @@
           alt="logo"
           class="w-12 h-12 mb-2"
         />
-        <h2 class="text-2xl font-bold mb-1 text-gray-900">账号登录/注册</h2>
-        <p class="text-gray-500 text-sm">请输入账号和密码，未注册账号将自动注册</p>
+        <h2 class="text-2xl font-bold mb-1 text-gray-900">Đăng nhập/Đăng ký tài khoản</h2>
+        <p class="text-gray-500 text-sm">Vui lòng nhập tài khoản và mật khẩu, tài khoản chưa đăng ký sẽ được tự động đăng ký</p>
       </div>
       <form @submit.prevent="loginOrRegister" class="mb-2">
-        <label class="block text-gray-700 text-sm mb-1" for="account">账号</label>
+        <label class="block text-gray-700 text-sm mb-1" for="account">Tài khoản</label>
         <input
           v-model="account"
           id="account"
           type="text"
-          placeholder="请输入账号"
+          placeholder="Vui lòng nhập tài khoản"
           class="border border-gray-300 focus:border-goodred focus:ring-goodred/30 focus:ring-2 outline-none p-2 rounded w-full mb-3 transition"
           maxlength="20"
           required
         />
         <div v-if="accountError" class="text-red-500 text-xs mb-2">{{ accountError }}</div>
-        <label class="block text-gray-700 text-sm mb-1" for="password">密码</label>
+        <label class="block text-gray-700 text-sm mb-1" for="password">Mật khẩu</label>
         <input
           v-model="password"
           id="password"
           type="password"
-          placeholder="请输入密码（6-20位字母数字组合）"
+          placeholder="Vui lòng nhập mật khẩu (6-20 ký tự gồm chữ và số)"
           class="border border-gray-300 focus:border-goodred focus:ring-goodred/30 focus:ring-2 outline-none p-2 rounded w-full mb-3 transition"
           required
         />
@@ -43,7 +43,7 @@
           type="submit"
           class="bg-goodred hover:bg-goodred text-white w-full py-2 rounded font-semibold shadow transition"
         >
-          登录/注册
+          Đăng nhập/Đăng ký
         </button>
       </form>
       <div v-if="tip" class="text-center mt-4 text-sm text-green-600">{{ tip }}</div>
@@ -82,11 +82,11 @@ async function loginOrRegister() {
   tip.value = "";
 
   if (!/^[a-zA-Z0-9_]{4,20}$/.test(account.value)) {
-    accountError.value = "账号需为4-20位字母、数字或下划线";
+    accountError.value = "Tài khoản phải từ 4-20 ký tự, chỉ gồm chữ, số hoặc gạch dưới";
     return;
   }
   if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(password.value)) {
-    passwordError.value = "密码需为6-20位字母和数字组合";
+    passwordError.value = "Mật khẩu phải từ 6-20 ký tự, gồm cả chữ và số";
     return;
   }
   try {
@@ -98,7 +98,7 @@ async function loginOrRegister() {
       }
     });
     if (res.data.code === 200 && res.data.data) {
-      tip.value = "登录成功";
+      tip.value = "Đăng nhập thành công";
       localStorage.setItem("userInfo", JSON.stringify(res.data.data));
       emit("success", { user: res.data.data });
       setTimeout(() => {
@@ -132,17 +132,17 @@ async function tryRegisterAndLogin() {
       }
     });
     if (res.data.code === 200 && res.data.data) {
-      tip.value = "账号不存在，已自动注册并登录";
+      tip.value = "Tài khoản chưa tồn tại, đã tự động đăng ký và đăng nhập";
       localStorage.setItem("userInfo", JSON.stringify(res.data.data));
       emit("success", { user: res.data.data });
       setTimeout(() => {
         close();
       }, 1000);
     } else {
-      passwordError.value = res.data.msg || "注册失败";
+      passwordError.value = res.data.msg || "Đăng ký thất bại";
     }
   } catch (err) {
-    passwordError.value = err.response?.data?.msg || "注册失败";
+    passwordError.value = err.response?.data?.msg || "Đăng ký thất bại";
   }
 }
 </script>
