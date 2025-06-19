@@ -84,7 +84,7 @@ const amountMap = {
 };
 
 const props = defineProps({
-  amount: String,
+  amount: [String, Number], // 允许字符串和数字，消除类型警告
   liveStreamId: [String, Number],
   gameType: String,
   gameRound: [String, Number],

@@ -53,12 +53,7 @@ public class SecurityConfig
      */
     @Autowired
     private JwtAuthenticationTokenFilter authenticationTokenFilter;
-    
-    /**
-     * 跨域过滤器
-     */
-    @Autowired
-    private CorsFilter corsFilter;
+
 
     /**
      * 允许匿名访问的地址
@@ -99,6 +94,8 @@ public class SecurityConfig
         return httpSecurity
             // CSRF禁用，因为不使用session
             .csrf(csrf -> csrf.disable())
+            // 启用CORS支持
+            .cors().and()
             // 禁用HTTP响应标头
             .headers((headersCustomizer) -> {
                 headersCustomizer.cacheControl(cache -> cache.disable()).frameOptions(options -> options.sameOrigin());
@@ -109,9 +106,11 @@ public class SecurityConfig
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // 注解标记允许匿名访问的url
             .authorizeHttpRequests((requests) -> {
+                
                 permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
                 requests.antMatchers("/login", "/register", "/captchaImage").permitAll()
+                        .antMatchers("/common/upload").permitAll() // 允许匿名上传
                         .antMatchers("/app/**").permitAll()
                     // 静态资源，可匿名访问
                     .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
@@ -123,9 +122,6 @@ public class SecurityConfig
             .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler))
             // 添加JWT filter
             .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-            // 添加CORS filter
-            .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class)
-            .addFilterBefore(corsFilter, LogoutFilter.class)
             .build();
     }
 

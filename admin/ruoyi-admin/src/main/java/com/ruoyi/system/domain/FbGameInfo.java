@@ -1,7 +1,6 @@
 package com.ruoyi.system.domain;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -63,6 +62,10 @@ public class FbGameInfo extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "结算时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
+
+    /** 结果图片 */
+    @Excel(name = "开奖结果图片")
+    private String resultImage;
 
     public void setId(Long id) 
     {
@@ -174,6 +177,14 @@ public class FbGameInfo extends BaseEntity
         return endTime;
     }
 
+    public void setResultImage(String resultImage) {
+        this.resultImage = resultImage;
+    }
+
+    public String getResultImage() {
+        return resultImage;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -188,6 +199,7 @@ public class FbGameInfo extends BaseEntity
             .append("startTime", getStartTime())
             .append("closeTime", getCloseTime())
             .append("endTime", getEndTime())
+            .append("resultImage", getResultImage())
             .toString();
     }
 }

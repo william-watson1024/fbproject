@@ -1,11 +1,8 @@
 package com.ruoyi.system.controller;
 
-import java.io.Console;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.StyledEditorKit;
 
 import com.ruoyi.system.domain.FbGameInfo;
 import com.ruoyi.system.domain.FbGameUser;
@@ -13,7 +10,6 @@ import com.ruoyi.system.service.IFbGameInfoService;
 import com.ruoyi.system.service.IFbGameUserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -136,7 +132,7 @@ public class FbGameRecordController extends BaseController
         fbGameRecord.setLiveStreamId(liveStreamId);
         List<FbGameRecord> records = fbGameRecordService.selectFbGameRecordList(fbGameRecord);
 
-        // 批量将记录置为已处理
+        // 批量将记录置为已处理，并写入图片URL
         for (FbGameRecord record : records) {
             record.setIsActive(0L);
             fbGameRecordService.updateFbGameRecord(record);
@@ -182,7 +178,7 @@ public class FbGameRecordController extends BaseController
             FbGameInfo existingGameInfo = fbGameInfoService.selectFbGameInfoByGameInfo(gameRound);
             existingGameInfo.setResult(betContent);
             existingGameInfo.setCloseTime(java.time.LocalDateTime.now());
-//            existingGameInfo.setResultImage(resultImage); // 你可以在GameInfo表新增一个字段来存储图片URL
+            existingGameInfo.setResultImage(resultImage); // 结算时写入图片URL
             fbGameInfoService.updateFbGameInfo(existingGameInfo);
 
             if (nextRoundEnabled != null && nextRoundEnabled) {
@@ -193,6 +189,7 @@ public class FbGameRecordController extends BaseController
                 newGameInfo.setGameStatus("投注中");
                 newGameInfo.setStartTime(java.time.LocalDateTime.now());
                 newGameInfo.setGameRound(gameRound + 1);
+                newGameInfo.setResultImage(resultImage); // 新增：设置图片URL
                 fbGameInfoService.insertFbGameInfo(newGameInfo);
             }
         }

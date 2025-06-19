@@ -59,4 +59,5 @@ public interface IFbGameRecordService
      */
     public int deleteFbGameRecordById(Long id);
 
+    // domain 已支持 resultImage 字段，接口方法签名无需变
 }

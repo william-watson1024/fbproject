@@ -76,6 +76,9 @@
           placeholder="请选择下注时间">
         </el-date-picker>
       </el-form-item>
+      <!-- <el-form-item label="结算图片URL" prop="resultImage"> -->
+        <!-- 移除图片搜索栏 -->
+      <!-- </el-form-item> -->
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -177,6 +180,7 @@
           <span>{{ parseTime(scope.row.betTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
+      <!-- 移除表格图片列 -->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -250,6 +254,7 @@
             placeholder="请选择下注时间">
           </el-date-picker>
         </el-form-item>
+        <!-- 移除弹窗图片上传 -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -261,7 +266,6 @@
       title="设置直播间赔率与开奖结果"
       :visible.sync="oddsDialogVisible"
       width="400px"
-      @close="cancelOdds"
     >
       <el-form :model="tempForm" label-width="120px" size="small">
         <el-form-item label="直播间ID">
@@ -316,20 +320,26 @@
         <el-form-item label="开奖结果图片">
           <el-upload
             class="upload-demo"
-            action="#"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-upload="beforeUpload"
-            :file-list="fileList"
+            action="http://localhost:8080/common/upload"
+            :headers="uploadHeaders"
+            :on-preview="handleOddsPreview"
+            :on-remove="handleOddsRemove"
+            :before-upload="beforeOddsUpload"
+            :file-list="oddsFileList"
             list-type="picture"
+            :on-success="handleOddsUploadSuccess"
+            with-credentials
           >
             <el-button size="small" type="primary">点击上传</el-button>
           </el-upload>
+          <div v-if="oddsUploadedImageUrl" style="margin-top: 10px;">
+            <img :src="oddsUploadedImageUrl" alt="预览" style="max-width: 200px; max-height: 200px; border: 1px solid #eee;" />
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirmOdds">确 定</el-button>
-        <el-button @click="cancelOdds">取 消</el-button>
+        <el-button >取 消</el-button>
       </div>
     </el-dialog>
 
@@ -392,7 +402,8 @@ export default {
         betName: null,
         betContent: null,
         isActive: null,
-        betTime: null
+        betTime: null,
+        resultImage: null
       },
       // 表单参数
       form: {},
@@ -443,7 +454,17 @@ export default {
       // ====== 新增的“结算”与“下一局”相关数据 ======
       nextRoundEnabled: false, // 是否开启下一局
       // ==============================================================
-
+      // 新增：上传图片的 fileList（仅用于弹窗，和表格无关）
+      // dialogFileList: [],
+      dialogVisible: false,
+      dialogImageUrl: '',
+      uploadHeaders: {
+        Authorization: 'Bearer ' + (localStorage.getItem('token') || '')
+      },
+      limit: 1,
+      // 新增：上传图片的 fileList（设置赔率弹窗专用）
+      oddsFileList: [],
+      oddsUploadedImageUrl: '',
     }
   },
   created() {
@@ -499,21 +520,22 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = "添加游戏记录管理"
+      this.reset();
+      this.open = true;
+      this.title = "添加游戏记录管理";
+      // this.dialogFileList = [];
+      this.form.resultImage = '';
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
+      this.reset();
+      const id = row.id || this.ids;
       getGameRecord(id).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改游戏记录管理"
-      })
+        this.form = response.data;
+        this.open = true;
+        this.title = "修改游戏记录管理";
+      });
     },
-    /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
@@ -557,6 +579,9 @@ export default {
     /** 点击“设置赔率”按钮，打开弹窗前先把临时变量设为上一次已保存的数据 */
     showOddsDialog() {
       this.oddsDialogVisible = true;
+      // 打开弹窗时清空专用图片状态，避免影响其他页面
+      this.oddsFileList = [];
+      this.oddsUploadedImageUrl = '';
     },
     /** 点击弹窗“确定” */
     confirmOdds() {
@@ -582,7 +607,8 @@ export default {
       this.persistOdds1 = this.tempForm.odds1;
       this.persistOdds2 = this.tempForm.odds2;
       this.persistOdds3 = this.tempForm.odds3;
-      this.persistFileList = this.fileList;  // 上传的图片
+      this.persistFileList = this.fileList;
+      this.persistImageUrl = this.oddsUploadedImageUrl;
 
       this.oddsDialogVisible = false;
       this.$message.success("赔率设置已保存");
@@ -605,14 +631,14 @@ export default {
       // 构造请求参数，注意这里你要和后端统一好字段名称
       const payload = {
         liveStreamId: this.persistLiveStreamId,
-        result: [this.persistDice1, this.persistDice2, this.persistDice3], // 三个骰子结果
+        result: [this.persistDice1, this.persistDice2, this.persistDice3],
         odds: {
           one: this.persistOdds1,
           two: this.persistOdds2,
           three: this.persistOdds3
         },
         nextRoundEnabled: this.nextRoundEnabled,
-        resultImage: this.persistFileList && this.persistFileList.length > 0 ? this.persistFileList[0].url : null
+        resultImage: this.oddsUploadedImageUrl || null // 结算时传递图片URL
       };
 
       // 发起结算请求
@@ -627,10 +653,106 @@ export default {
         .catch(() => {
           this.$message.error("结算失败，请重试！");
         });
-    }
-
-
-
+    },
+    // 上传图片成功后回调，保存图片URL
+    handleUploadSuccess(response, file, fileList) {
+      // 若依 /common/upload 返回 { code: 200, url: '图片URL', ... }
+      console.log('上传成功返回：', response);
+      if (response && response.code === 200 && response.url) {
+        let previewUrl = response.url;
+        if (response.url.startsWith('/')) {
+          previewUrl = window.location.origin + response.url;
+        }
+        this.uploadedImageUrl = previewUrl;
+        this.fileList = [{ name: file.name, url: previewUrl }];
+      } else {
+        this.$message.error('图片上传失败');
+      }
+    },
+    // 上传图片时重命名为 image-room{直播间}time{游戏结束时间}.png
+    handleUploadRequest(file) {
+      // 重命名为 image-room{直播间}time{游戏结束时间}.png
+      const room = this.tempForm.liveStreamId || 'unknown';
+      let endTime = this.tempForm.endTime;
+      let endTimeStr = '';
+      if (endTime) {
+        if (typeof endTime === 'string') {
+          // 期望格式 yyyy-MM-dd HH:mm:ss
+          endTimeStr = endTime.replace(/[- :]/g, '').slice(0, 14);
+        } else if (endTime instanceof Date) {
+          const pad = n => n < 10 ? '0' + n : n;
+          endTimeStr = `${endTime.getFullYear()}${pad(endTime.getMonth()+1)}${pad(endTime.getDate())}${pad(endTime.getHours())}${pad(endTime.getMinutes())}${pad(endTime.getSeconds())}`;
+        }
+      } else {
+        const now = new Date();
+        const pad = n => n < 10 ? '0' + n : n;
+        endTimeStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      }
+      const ext = '.png';
+      const newName = `image-room${room}time${endTimeStr}${ext}`;
+      const renamedFile = new File([file], newName, { type: file.type });
+      return Promise.resolve(renamedFile);
+      // 调试输出
+      console.log('[图片上传重命名调试]', {
+        原始名: file.name,
+        新名: newName,
+        endTime,
+        endTimeStr,
+        room,
+        fileObj: renamedFile
+      });
+      return renamedFile;
+    },
+    // el-upload before-upload 钩子
+    beforeUpload(file) {
+      // 只允许图片
+      const isImage = file.type.startsWith('image/');
+      if (!isImage) {
+        this.$message.error('只能上传图片文件');
+        return false;
+      }
+      // 重命名
+      const renamedFile = this.handleUploadRequest(file);
+      this.uploadedFile = renamedFile;
+      return renamedFile;
+    },
+    // 设置赔率弹窗专用图片上传逻辑
+    beforeOddsUpload(file) {
+      // 只允许图片
+      const isImage = file.type.startsWith('image/');
+      if (!isImage) {
+        this.$message.error('只能上传图片文件');
+        return false;
+      }
+      // 调用重命名逻辑并调试输出
+      const renamedFile = this.handleUploadRequest(file);
+      // 调试：输出重命名结果
+      console.log('[赔率弹窗图片上传重命名调试]', {
+        原始名: file.name,
+        新名: renamedFile.name,
+        fileObj: renamedFile
+      });
+      return renamedFile;
+    },
+    handleOddsUploadSuccess(response, file, fileList) {
+      if (response && response.code === 200 && response.url) {
+        let previewUrl = response.url;
+        if (response.url.startsWith('/')) {
+          previewUrl = window.location.origin + response.url;
+        }
+        this.oddsUploadedImageUrl = previewUrl;
+        this.oddsFileList = [{ name: file.name, url: previewUrl }];
+      } else {
+        this.$message.error('图片上传失败');
+      }
+    },
+    handleOddsRemove(file, fileList) {
+      this.oddsFileList = fileList;
+      if (fileList.length === 0) this.oddsUploadedImageUrl = '';
+    },
+    handleOddsPreview(file) {
+      window.open(file.url);
+    },
   }
 }
 </script>

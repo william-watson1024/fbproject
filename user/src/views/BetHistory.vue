@@ -158,7 +158,7 @@ onMounted(() => {
 <style scoped>
 .header {
   box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  background: #18181c !important;
+  background: #C02638 !important;
 }
 .min-h-screen, body {
   background: #18181c !important;

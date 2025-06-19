@@ -85,6 +85,14 @@
           placeholder="请选择结算时间">
         </el-date-picker>
       </el-form-item>
+      <el-form-item label="游戏图片URL" prop="resultImage">
+        <el-input
+          v-model="queryParams.resultImage"
+          placeholder="请输入游戏图片URL"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -160,6 +168,17 @@
       <el-table-column label="结算时间" align="center" prop="endTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="游戏图片" align="center" prop="resultImage">
+        <template slot-scope="scope">
+          <el-image
+            v-if="scope.row.resultImage"
+            :src="scope.row.resultImage"
+            :preview-src-list="[scope.row.resultImage]"
+            style="width: 75px; height: 75px; object-fit: cover; border: 1px solid #eee; cursor:pointer;"
+            fit="cover"
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -246,6 +265,21 @@
             placeholder="请选择结算时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="游戏图片上传" prop="resultImage">
+          <el-upload
+            action="http://localhost:8080/common/upload"
+            :headers="uploadHeaders"
+            :on-success="handlePictureSuccess"
+            :before-upload="beforeUpload"
+            list-type="picture-card"
+            :file-list="dialogFileList"
+            :limit="1"
+            :on-remove="handleRemove"
+            :on-preview="(file) => {}"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -293,7 +327,8 @@ export default {
         gameSerialNumber: null,
         startTime: null,
         closeTime: null,
-        endTime: null
+        endTime: null,
+        resultImage: null
       },
       // 表单参数
       form: {},
@@ -329,7 +364,12 @@ export default {
         endTime: [
           { required: true, message: "结算时间不能为空", trigger: "blur" }
         ]
-      }
+      },
+      dialogFileList: [],
+      uploadHeaders: {
+        Authorization: 'Bearer ' + (localStorage.getItem('token') || '')
+      },
+      limit: 1,
     }
   },
   created() {
@@ -363,7 +403,8 @@ export default {
         gameSerialNumber: null,
         startTime: null,
         closeTime: null,
-        endTime: null
+        endTime: null,
+        resultImage: null
       }
       this.resetForm("form")
     },
@@ -385,26 +426,49 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = "添加游戏信息管理"
+      this.reset();
+      this.open = true;
+      this.title = "添加游戏信息管理";
+      this.dialogFileList = [];
+      this.form.resultImage = '';
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
+      this.reset();
+      const id = row.id || this.ids;
       getGameInfo(id).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = "修改游戏信息管理"
-      })
+        this.form = response.data;
+        if (response.data.resultImage) {
+          this.dialogFileList = [{ name: '游戏图片', url: response.data.resultImage }];
+          this.form.resultImage = response.data.resultImage;
+        } else {
+          this.dialogFileList = [];
+          this.form.resultImage = '';
+        }
+        this.open = true;
+        this.title = "修改游戏信息管理";
+      });
+    },
+    handlePictureSuccess(res, file) {
+      if (res && res.code === 200 && res.url) {
+        this.dialogFileList = [{ name: file.name, url: res.url }];
+        this.form.resultImage = res.url;
+      } else {
+        this.$message.error('图片上传失败');
+      }
+    },
+    handleRemove(file, fileList) {
+      this.dialogFileList = fileList;
+      if (fileList.length === 0) this.form.resultImage = '';
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.resultImage = (this.dialogFileList.length > 0 && this.dialogFileList[0].url) ? this.dialogFileList[0].url : '';
           if (this.form.id != null) {
             updateGameInfo(this.form).then(response => {
+              // console.log(this.form.resultImage);
               this.$modal.msgSuccess("修改成功")
               this.open = false
               this.getList()
@@ -434,7 +498,32 @@ export default {
       this.download('system/gameInfo/export', {
         ...this.queryParams
       }, `gameInfo_${new Date().getTime()}.xlsx`)
-    }
+    },
+    beforeUpload(file) {
+      // 重命名为 image-room{直播间}time{游戏结束时间}.png
+      const room = this.form.liveStreamId || 'unknown';
+      let endTime = this.form.endTime;
+      let endTimeStr = '';
+      if (endTime) {
+        if (typeof endTime === 'string') {
+          // 期望格式 yyyy-MM-dd HH:mm:ss
+          endTimeStr = endTime.replace(/[- :]/g, '').slice(0, 14);
+        } else if (endTime instanceof Date) {
+          const pad = n => n < 10 ? '0' + n : n;
+          endTimeStr = `${endTime.getFullYear()}${pad(endTime.getMonth()+1)}${pad(endTime.getDate())}${pad(endTime.getHours())}${pad(endTime.getMinutes())}${pad(endTime.getSeconds())}`;
+        }
+      } else {
+        const now = new Date();
+        const pad = n => n < 10 ? '0' + n : n;
+        endTimeStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+      }
+      const ext = '.png';
+
+      const newName = `image-room${room}time${endTimeStr}${ext}`;
+      console.log(newName);
+      const renamedFile = new File([file], newName, { type: file.type });
+      return Promise.resolve(renamedFile);
+    },
   }
 }
 </script>

@@ -16,10 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="startTime"    column="start_time"    />
         <result property="closeTime"    column="close_time"    />
         <result property="endTime"    column="end_time"    />
+        <result property="resultImage" column="result_image" />
     </resultMap>
 
     <sql id="selectFbGameInfoVo">
-        select id, game_name, game_host, live_stream_id, game_round, result, game_status, game_serial_number, start_time, close_time, end_time from fb_game_info
+        select id, game_name, game_host, live_stream_id, game_round, result, game_status, game_serial_number, start_time, close_time, end_time, result_image from fb_game_info
     </sql>
 
     <select id="selectFbGameInfoList" parameterType="FbGameInfo" resultMap="FbGameInfoResult">
@@ -64,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">start_time,</if>
             <if test="closeTime != null">close_time,</if>
             <if test="endTime != null">end_time,</if>
+            <if test="resultImage != null">result_image,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="gameName != null and gameName != ''">#{gameName},</if>
@@ -76,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">#{startTime},</if>
             <if test="closeTime != null">#{closeTime},</if>
             <if test="endTime != null">#{endTime},</if>
+            <if test="resultImage != null">#{resultImage},</if>
          </trim>
     </insert>
 
@@ -92,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="closeTime != null">close_time = #{closeTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="resultImage != null">result_image = #{resultImage},</if>
         </trim>
         where id = #{id}
     </update>
