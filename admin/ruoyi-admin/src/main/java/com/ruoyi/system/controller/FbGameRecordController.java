@@ -1,7 +1,9 @@
 package com.ruoyi.system.controller;
 
+import java.io.Console;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.text.StyledEditorKit;
 
@@ -114,46 +116,76 @@ public class FbGameRecordController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:gameRecord:settle')")
     @Log(title = "结算", businessType = BusinessType.UPDATE)
     @PostMapping("/settle")
-    public AjaxResult settle(@RequestBody com.ruoyi.system.Do.SettleGameDTO dto){
+    public AjaxResult settle(@RequestBody com.ruoyi.system.Do.SettleGameDTO dto) {
         Long liveStreamId = dto.getLiveStreamId();
-        Long odds = dto.getOdds();
-        String betContent = dto.getBetContent();
+        List<String> resultList = dto.getResult(); // 3个骰子结果
+        Map<String, Long> oddsMap = dto.getOdds(); // 赔率map
         Boolean nextRoundEnabled = dto.getNextRoundEnabled();
-        if (liveStreamId == null || odds == null || !StringUtils.hasText(betContent)) {
-            return AjaxResult.error("直播间ID、赔率和投注内容不能为空");
+        String resultImage = dto.getResultImage(); // 图片URL，可做存储备用
+
+        if (liveStreamId == null || resultList == null || resultList.size() != 3 || oddsMap == null) {
+            return AjaxResult.error("直播间ID、开奖结果和赔率不能为空，且开奖结果需包含3个元素");
         }
-        // Step 1: 查找所有 is_active = 0的记录并且直播间id = liveStreamId
+
+        // 直接将开奖结果列表转为字符串存储（你也可以改为用JSON存储）
+        String betContent = String.join(",", resultList);
+
+        // 查询所有 is_active = 1 并且直播间ID匹配的记录
         FbGameRecord fbGameRecord = new FbGameRecord();
         fbGameRecord.setIsActive(1L);
         fbGameRecord.setLiveStreamId(liveStreamId);
         List<FbGameRecord> records = fbGameRecordService.selectFbGameRecordList(fbGameRecord);
-        // Step 2: 设置为已处理
+
+        // 批量将记录置为已处理
         for (FbGameRecord record : records) {
             record.setIsActive(0L);
             fbGameRecordService.updateFbGameRecord(record);
         }
+
         Long gameRound = null;
-        // Step 3: 处理参数相同的记录
         for (FbGameRecord record : records) {
-            gameRound=record.getGameRound();
-            if (betContent.equals(record.getBetName())) {
+            gameRound = record.getGameRound();
+
+            // 判断当前记录是否中奖
+            int hitCount = 0;
+            for (String diceResult : resultList) {
+                if (diceResult.equals(record.getBetName())) {
+                    hitCount++;
+                }
+                System.out.println("投注内容: " + record.getBetName() + ", 骰子结果: " + diceResult);
+            }
+            System.out.println("命中数量: " + hitCount + "，投注内容: " + record.getBetName());
+
+            if (hitCount > 0) {
                 Long userId = record.getGameUserId();
                 Integer betNum = record.getBetNum().intValue();
                 FbGameUser user = fbGameUserService.selectFbGameUserById(userId);
                 if (user != null) {
+                    // 计算获得的积分，根据命中数量取赔率
+                    Long odds = 0L;
+                    if (hitCount == 1) {
+                        odds = oddsMap.getOrDefault("one", 0L);
+                    } else if (hitCount == 2) {
+                        odds = oddsMap.getOrDefault("two", 0L);
+                    } else if (hitCount == 3) {
+                        odds = oddsMap.getOrDefault("three", 0L);
+                    }
                     Long additionalPoints = odds * betNum;
                     user.setPoints(user.getPoints() + additionalPoints);
                     fbGameUserService.updateFbGameUser(user);
                 }
             }
         }
-        //Step 4：处理游戏记录,如果gameRound不等于空的话
+
+        // 更新游戏记录表
         if (gameRound != null) {
             FbGameInfo existingGameInfo = fbGameInfoService.selectFbGameInfoByGameInfo(gameRound);
             existingGameInfo.setResult(betContent);
             existingGameInfo.setCloseTime(java.time.LocalDateTime.now());
+//            existingGameInfo.setResultImage(resultImage); // 你可以在GameInfo表新增一个字段来存储图片URL
             fbGameInfoService.updateFbGameInfo(existingGameInfo);
-            if(nextRoundEnabled){
+
+            if (nextRoundEnabled != null && nextRoundEnabled) {
                 FbGameInfo newGameInfo = new FbGameInfo();
                 newGameInfo.setGameName(existingGameInfo.getGameName());
                 newGameInfo.setGameHost(existingGameInfo.getGameHost());
@@ -161,7 +193,7 @@ public class FbGameRecordController extends BaseController
                 newGameInfo.setGameStatus("投注中");
                 newGameInfo.setStartTime(java.time.LocalDateTime.now());
                 newGameInfo.setGameRound(gameRound + 1);
-                fbGameInfoService.insertFbGameInfo(existingGameInfo);
+                fbGameInfoService.insertFbGameInfo(newGameInfo);
             }
         }
 

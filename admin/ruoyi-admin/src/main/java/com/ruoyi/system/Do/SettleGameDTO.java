@@ -1,5 +1,8 @@
 package com.ruoyi.system.Do;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * 用于接收结算请求的 DTO
  */
@@ -11,28 +14,26 @@ public class SettleGameDTO {
     private Long liveStreamId;
 
     /**
-     * 赔率（整型，使用 Long 表示）
+     * 开奖结果（三个骰子的结果，使用 List<String>）
      */
-    private Long odds;
+    private List<String> result;
 
     /**
-     * 投注内容（开奖结果）
+     * 赔率（包含中一只、中两只、中三只的赔率）
      */
-    private String betContent;
+    private Map<String, Long> odds;
 
     /**
      * 是否开启下一局
      */
     private Boolean nextRoundEnabled;
 
-    public SettleGameDTO() {
-    }
+    /**
+     * 结果图片（可以是图片的 URL）
+     */
+    private String resultImage;
 
-    public SettleGameDTO(Long liveStreamId, Long odds, String betContent, Boolean nextRoundEnabled) {
-        this.liveStreamId = liveStreamId;
-        this.odds = odds;
-        this.betContent = betContent;
-        this.nextRoundEnabled = nextRoundEnabled;
+    public SettleGameDTO() {
     }
 
     public Long getLiveStreamId() {
@@ -43,20 +44,20 @@ public class SettleGameDTO {
         this.liveStreamId = liveStreamId;
     }
 
-    public Long getOdds() {
+    public List<String> getResult() {
+        return result;
+    }
+
+    public void setResult(List<String> result) {
+        this.result = result;
+    }
+
+    public Map<String, Long> getOdds() {
         return odds;
     }
 
-    public void setOdds(Long odds) {
+    public void setOdds(Map<String, Long> odds) {
         this.odds = odds;
-    }
-
-    public String getBetContent() {
-        return betContent;
-    }
-
-    public void setBetContent(String betContent) {
-        this.betContent = betContent;
     }
 
     public Boolean getNextRoundEnabled() {
@@ -67,13 +68,22 @@ public class SettleGameDTO {
         this.nextRoundEnabled = nextRoundEnabled;
     }
 
+    public String getResultImage() {
+        return resultImage;
+    }
+
+    public void setResultImage(String resultImage) {
+        this.resultImage = resultImage;
+    }
+
     @Override
     public String toString() {
         return "SettleGameDTO{" +
                 "liveStreamId=" + liveStreamId +
+                ", result=" + result +
                 ", odds=" + odds +
-                ", betContent='" + betContent + '\'' +
                 ", nextRoundEnabled=" + nextRoundEnabled +
+                ", resultImage='" + resultImage + '\'' +
                 '}';
     }
 }

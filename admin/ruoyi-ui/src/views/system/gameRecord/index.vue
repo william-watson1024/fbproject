@@ -49,10 +49,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="投注内容" prop="betContent">
+      <el-form-item label="备注" prop="betContent">
         <el-input
           v-model="queryParams.betContent"
-          placeholder="请输入投注内容"
+          placeholder="请输入备注"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -163,7 +163,7 @@
       <el-table-column label="游戏局号" align="center" prop="gameRound" />
       <el-table-column label="下注金额" align="center" prop="betNum" />
       <el-table-column label="下注名称" align="center" prop="betName" />
-      <el-table-column label="投注内容" align="center" prop="betContent" />
+      <el-table-column label="备注" align="center" prop="betContent" />
       <el-table-column label="下注状态" align="center" prop="isActive">
         <template #default="{ row }">
           <span>
@@ -229,8 +229,8 @@
         <el-form-item label="下注名称" prop="betName">
           <el-input v-model="form.betName" placeholder="请输入下注名称" />
         </el-form-item>
-        <el-form-item label="投注内容" prop="betContent">
-          <el-input v-model="form.betContent" placeholder="请输入投注内容" />
+        <el-form-item label="备注" prop="betContent">
+          <el-input v-model="form.betContent" placeholder="请输入备注" />
         </el-form-item>
         <el-form-item label="下注状态" prop="isActive">
           <el-select
@@ -263,28 +263,68 @@
       width="400px"
       @close="cancelOdds"
     >
-      <el-form :model="tempForm" label-width="100px" size="small">
+      <el-form :model="tempForm" label-width="120px" size="small">
         <el-form-item label="直播间ID">
-          <el-input
-            v-model="tempLiveStreamId"
-            placeholder="请输入直播间ID"
-            clearable
-          />
+          <el-input v-model="tempForm.liveStreamId" placeholder="请输入直播间ID" clearable />
         </el-form-item>
-        <el-form-item label="赔率">
-          <el-input
-            v-model="tempOdds"
-            placeholder="请输入赔率（数字）"
-            clearable
-            type="number"
-          />
+
+        <el-form-item label="第一个骰子">
+          <el-select v-model="tempForm.dice1" placeholder="请选择">
+            <el-option
+              v-for="(icon, name) in animalIcons"
+              :key="name"
+              :label="name + ' ' + icon"
+              :value="name"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="开奖结果">
-          <el-input
-            v-model="tempResult"
-            placeholder="请输入开奖结果"
-            clearable
-          />
+
+        <el-form-item label="第二个骰子">
+          <el-select v-model="tempForm.dice2" placeholder="请选择">
+            <el-option
+              v-for="(icon, name) in animalIcons"
+              :key="name"
+              :label="name + ' ' + icon"
+              :value="name"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="第三个骰子">
+          <el-select v-model="tempForm.dice3" placeholder="请选择">
+            <el-option
+              v-for="(icon, name) in animalIcons"
+              :key="name"
+              :label="name + ' ' + icon"
+              :value="name"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="中一只赔率">
+          <el-input v-model="tempForm.odds1" placeholder="请输入中一只赔率" clearable type="number" />
+        </el-form-item>
+
+        <el-form-item label="中两只赔率">
+          <el-input v-model="tempForm.odds2" placeholder="请输入中两只赔率" clearable type="number" />
+        </el-form-item>
+
+        <el-form-item label="中三只赔率">
+          <el-input v-model="tempForm.odds3" placeholder="请输入中三只赔率" clearable type="number" />
+        </el-form-item>
+
+        <el-form-item label="开奖结果图片">
+          <el-upload
+            class="upload-demo"
+            action="#"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-upload="beforeUpload"
+            :file-list="fileList"
+            list-type="picture"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -304,6 +344,23 @@ export default {
   name: "GameRecord",
   data() {
     return {
+      animalIcons: {
+        "Hươu": "🦌",
+        "Bầu": "🎃",
+        "Gà": "🐔",
+        "Cá": "🐟",
+        "Cua": "🦀",
+        "Tôm": "🦐"
+      },
+      tempForm: {
+        liveStreamId: '',
+        dice1: '',
+        dice2: '',
+        dice3: '',
+        odds1: '',
+        odds2: '',
+        odds3: ''
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -337,11 +394,6 @@ export default {
         isActive: null,
         betTime: null
       },
-      tempForm: {
-        tempLiveStreamId: '',
-        tempOdds: '',
-        tempResult: ''
-      },
       // 表单参数
       form: {},
       // 表单校验
@@ -368,7 +420,7 @@ export default {
           {required: true, message: "下注名称不能为空", trigger: "blur"}
         ],
         betContent: [
-          {required: true, message: "投注内容不能为空", trigger: "blur"}
+          {required: true, message: "备注不能为空", trigger: "blur"}
         ],
         isActive: [
           {required: true, message: "下注状态不能为空", trigger: "blur"}
@@ -389,8 +441,9 @@ export default {
       persistOdds: null,
       persistResult: null,
       // ====== 新增的“结算”与“下一局”相关数据 ======
-      nextRoundEnabled: false // 是否开启下一局
+      nextRoundEnabled: false, // 是否开启下一局
       // ==============================================================
+
     }
   },
   created() {
@@ -503,63 +556,70 @@ export default {
     // =================== 新增“设置赔率”相关方法 ===================
     /** 点击“设置赔率”按钮，打开弹窗前先把临时变量设为上一次已保存的数据 */
     showOddsDialog() {
-      this.tempLiveStreamId = this.persistLiveStreamId;
-      this.tempOdds = this.persistOdds;
-      this.tempResult = this.persistResult;
       this.oddsDialogVisible = true;
     },
     /** 点击弹窗“确定” */
     confirmOdds() {
-      // 简单校验：比如“直播间ID”与“赔率”不能为空
+      // 简单校验：直播间ID、三个骰子、赔率不能为空
       if (
-        this.tempLiveStreamId === null ||
-        this.tempLiveStreamId === "" ||
-        this.tempOdds === null ||
-        this.tempOdds === ""
+        !this.tempForm.liveStreamId ||
+        !this.tempForm.dice1 ||
+        !this.tempForm.dice2 ||
+        !this.tempForm.dice3 ||
+        !this.tempForm.odds1 ||
+        !this.tempForm.odds2 ||
+        !this.tempForm.odds3
       ) {
-        this.$message.warning("请先填写“直播间ID”和“赔率”！");
+        this.$message.warning("请完整填写直播间ID、三个骰子结果和所有赔率！");
         return;
       }
-      // 将临时变量赋值给持久变量
-      this.persistLiveStreamId = this.tempLiveStreamId;
-      this.persistOdds = this.tempOdds;
-      this.persistResult = this.tempResult;
+
+      // 保存数据：可以根据你业务是否需要持久化，这里我直接赋值给持久变量（和你原逻辑保持一致）
+      this.persistLiveStreamId = this.tempForm.liveStreamId;
+      this.persistDice1 = this.tempForm.dice1;
+      this.persistDice2 = this.tempForm.dice2;
+      this.persistDice3 = this.tempForm.dice3;
+      this.persistOdds1 = this.tempForm.odds1;
+      this.persistOdds2 = this.tempForm.odds2;
+      this.persistOdds3 = this.tempForm.odds3;
+      this.persistFileList = this.fileList;  // 上传的图片
+
       this.oddsDialogVisible = false;
-      this.$message.success("已保存赔率设置");
+      this.$message.success("赔率设置已保存");
     },
-    /** 点击弹窗“取消”或右上角叉号 */
-    cancelOdds() {
-      // 不做任何持久化赋值，直接关闭弹窗
-      this.oddsDialogVisible = false;
-    },
+
+    /** 结算处理 */
     handleSettlement() {
       console.log("开始结算");
-      // 1. 校验
+
+      // 校验：必须有完整数据
       if (
-        this.persistLiveStreamId === null ||
-        this.persistLiveStreamId === "" ||
-        this.persistOdds === null ||
-        this.persistOdds === "" ||
-        !this.persistResult
+        !this.persistLiveStreamId ||
+        !this.persistDice1 || !this.persistDice2 || !this.persistDice3 ||
+        !this.persistOdds1 || !this.persistOdds2 || !this.persistOdds3
       ) {
-        this.$message.warning("请先在“设置赔率”中确认“直播间ID”、“赔率”以及“开奖结果”");
+        this.$message.warning("请先在‘设置赔率’中完整填写数据！");
         return;
       }
 
-      // 2. 构造请求参数
+      // 构造请求参数，注意这里你要和后端统一好字段名称
       const payload = {
         liveStreamId: this.persistLiveStreamId,
-        odds: this.persistOdds,
-        betContent: this.persistResult,
-        nextRoundEnabled: this.nextRoundEnabled // 是否开启下一局
+        result: [this.persistDice1, this.persistDice2, this.persistDice3], // 三个骰子结果
+        odds: {
+          one: this.persistOdds1,
+          two: this.persistOdds2,
+          three: this.persistOdds3
+        },
+        nextRoundEnabled: this.nextRoundEnabled,
+        resultImage: this.persistFileList && this.persistFileList.length > 0 ? this.persistFileList[0].url : null
       };
 
-      // 3. 调用结算接口
+      // 发起结算请求
       this.settleGameRecord(payload)
         .then(() => {
           this.$message.success("结算成功！");
-          if(this.nextRoundEnabled) {
-
+          if (this.nextRoundEnabled) {
             this.$message.success("已开启下一局");
           }
           this.getList();
@@ -568,6 +628,7 @@ export default {
           this.$message.error("结算失败，请重试！");
         });
     }
+
 
 
   }
