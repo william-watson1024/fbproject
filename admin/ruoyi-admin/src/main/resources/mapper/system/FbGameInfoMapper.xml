@@ -36,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null "> and start_time = #{startTime}</if>
             <if test="closeTime != null "> and close_time = #{closeTime}</if>
             <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="resultImage != null and resultImage != ''"> and result_image like concat('%', #{resultImage}, '%')</if>
         </where>
     </select>
     

@@ -2,8 +2,8 @@
   <div class="p-4">
     <div class="quick-actions">
       <button class="action-btn hot-live wide-btn" @click="goHome">Phát sóng nổi bật</button>
-      <button class="action-btn recharge wide-btn" @click="goRecharge">Nạp tiền</button>
-      <button class="action-btn withdraw wide-btn" @click="goWithdraw">Rút tiền</button>
+      <button class="action-btn recharge wide-btn" @click="goRecharge" disabled style="opacity:0.5;cursor:not-allowed;">Nạp tiền</button>
+      <button class="action-btn withdraw wide-btn" @click="goWithdraw" disabled style="opacity:0.5;cursor:not-allowed;">Rút tiền</button>
     </div>
   </div>
 </template>
