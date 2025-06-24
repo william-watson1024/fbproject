@@ -1,14 +1,17 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   server: {
+    host: '0.0.0.0',
+    port: 80,
     proxy: {
-      '/login': {
-        target: 'http://localhost:8080', // 你的后端地址
+      '/api': {
+        target: 'http://localhost:8080',         // 后端实际地址（开发环境）
         changeOrigin: true,
-      },
-      // 其他接口...
+        rewrite: path => path.replace(/^\/api/, '') // 去掉 /api 前缀
+      }
     }
   },
   plugins: [vue()],

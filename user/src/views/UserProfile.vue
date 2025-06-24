@@ -120,7 +120,7 @@ async function loadUserInfo() {
       if (localUser.account) {
         // 用 /app/gameUser/points?account=xxx 获取积分
         const res = await axios.get(
-          `http://localhost:8080/app/gameUser/points`,
+          `/api/app/gameUser/points`,
           { params: { account: localUser.account } }
         );
         if (res.data.code === 200 && typeof res.data.data === 'number') {

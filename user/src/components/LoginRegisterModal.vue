@@ -91,7 +91,7 @@ async function loginOrRegister() {
   }
   try {
     // 先尝试登录
-    const res = await axios.post("http://localhost:8080/app/gameUser/login", null, {
+    const res = await axios.post("/api/app/gameUser/login", null, {
       params: {
         account: account.value,
         password: password.value
@@ -124,7 +124,7 @@ async function loginOrRegister() {
 
 async function tryRegisterAndLogin() {
   try {
-    const res = await axios.post("http://localhost:8080/app/gameUser/registerAndLogin", null, {
+    const res = await axios.post("/api/app/gameUser/registerAndLogin", null, {
       params: {
         account: account.value,
         password: password.value,

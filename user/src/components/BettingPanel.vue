@@ -137,7 +137,7 @@ async function fetchPoints() {
   }
   try {
     // 用新的 /app/gameUser/points?account=xxx 接口获取积分
-    const res = await axios.get(`http://localhost:8080/app/gameUser/points`, {
+    const res = await axios.get(`/api/app/gameUser/points`, {
       params: { account: userInfo.account }
     })
     if (res.data.code === 200 && typeof res.data.data === 'number') {
@@ -202,7 +202,7 @@ async function handleBet() {
       betName: selectedAnimal.value,
       betContent: selectedAnimal.value
     }
-    const res = await axios.post('http://localhost:8080/app/gameUser/deductPoints', null, { params: payload })
+    const res = await axios.post('/api/app/gameUser/deductPoints', null, { params: payload })
     if (res.data.code === 200) {
       betMsg.value = res.data.msg || 'Đặt cược thành công';
       await fetchPoints()

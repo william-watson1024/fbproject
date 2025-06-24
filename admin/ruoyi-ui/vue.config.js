@@ -31,7 +31,7 @@ module.exports = {
   // webpack-dev-server 相关配置
   devServer: {
     host: '0.0.0.0',
-    port: port,
+    port: 80,
     open: true,
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
@@ -44,7 +44,7 @@ module.exports = {
       },
       // springdoc proxy
       '^/v3/api-docs/(.*)': {
-        target: baseUrl,
+        target: 'http://192.168.64.18',
         changeOrigin: true
       }
     },

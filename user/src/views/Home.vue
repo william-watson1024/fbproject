@@ -49,7 +49,7 @@ const rooms = ref([])
 onMounted(async () => {
   try {
     // 正确接口：/app/liveStream/getLiveStreamList
-    const res = await axios.get('http://localhost:8080/app/liveStream/getLiveStreamList')
+    const res = await axios.get('/api/app/liveStream/getLiveStreamList')
     if (res.data.code === 200 && Array.isArray(res.data.data)) {
       rooms.value = res.data.data.map((item, idx) => ({
         id: item.id,
