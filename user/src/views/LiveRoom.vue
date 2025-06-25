@@ -238,7 +238,7 @@ async function fetchRoomGameInfos() {
   try {
     // 1. 先用 listMinutesBeforeNow 查近一段时间的所有游戏局（假设5小时内，300分钟）
     const res = await axios.get(
-      "http://localhost:8080/app/gameInfo/listMinutesBeforeNow",
+      "/api/app/gameInfo/listMinutesBeforeNow",
       {
         params: { minutesBeforeNow: 10000 }, // 临时调大到约7天
       }
@@ -253,7 +253,7 @@ async function fetchRoomGameInfos() {
       const detailList = [];
       for (const round of rounds) {
         const detailRes = await axios.get(
-          "http://localhost:8080/app/gameInfo/listByGameRound",
+          "/api/app/gameInfo/listByGameRound",
           {
             params: { liveStreamId: roomId, gameRound: round },
           }
@@ -307,7 +307,7 @@ async function fetchMyBets() {
   }
   try {
     // 查询当前房间下当前用户的所有投注记录
-    const res = await axios.get("http://localhost:8080/app/gameRecord/list", {
+    const res = await axios.get("/api/app/gameRecord/list", {
       params: {
         gameUserAccount: user.account,
         liveStreamId: roomId,
@@ -332,7 +332,7 @@ async function fetchRecentResults() {
   try {
     const token = localStorage.getItem("token") || "";
     const res = await axios.get(
-      "http://localhost:8080/system/gameInfo/list",
+      "/api/system/gameInfo/list",
       {
         params: {
           liveStreamId: roomId,
@@ -363,7 +363,7 @@ onMounted(async () => {
   try {
     // 1. 获取直播间详情（用新接口）
     const res = await axios.get(
-      `http://localhost:8080/app/liveStream/getLiveStreamById/${roomId}`
+      `/api/app/liveStream/getLiveStreamById/${roomId}`
     );
     if (res.data.code === 200 && res.data.data) {
       roomInfo.value = res.data.data;

@@ -320,7 +320,7 @@
         <el-form-item label="开奖结果图片">
           <el-upload
             class="upload-demo"
-            action="http://localhost:8080/common/upload"
+            action="/common/upload"
             :headers="uploadHeaders"
             :on-preview="handleOddsPreview"
             :on-remove="handleOddsRemove"

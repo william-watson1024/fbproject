@@ -102,7 +102,7 @@ async function loadUserInfo() {
       if (localUser.account) {
         // 用 /app/gameUser/points?account=xxx 获取积分
         const res = await axios.get(
-          `http://localhost:8080/app/gameUser/points`,
+          `/api/app/gameUser/points`,
           { params: { account: localUser.account } }
         );
         if (res.data.code === 200 && typeof res.data.data === 'number') {
@@ -134,7 +134,7 @@ async function loadMyBets() {
   }
   try {
     // 查询当前用户的所有投注记录（不限定直播间）
-    const res = await axios.get('http://localhost:8080/app/gameRecord/list', {
+    const res = await axios.get('/api/app/gameRecord/list', {
       params: {
         gameUserAccount: user.account
       }

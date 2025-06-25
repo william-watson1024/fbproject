@@ -267,7 +267,7 @@
         </el-form-item>
         <el-form-item label="游戏图片上传" prop="resultImage">
           <el-upload
-            action="http://localhost:8080/common/upload"
+            action="/common/upload"
             :headers="uploadHeaders"
             :on-success="handlePictureSuccess"
             :before-upload="beforeUpload"
